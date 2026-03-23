@@ -1,6 +1,24 @@
 import Anthropic from '@anthropic-ai/sdk';
+import sharp from 'sharp';
 
 const anthropic = new Anthropic();
+
+async function preprocessImage(base64Data) {
+  // Strip data URL prefix if present
+  const rawBase64 = base64Data.replace(/^data:image\/\w+;base64,/, '');
+  const inputBuffer = Buffer.from(rawBase64, 'base64');
+
+  // Upscale, sharpen, and boost contrast to make small printed numbers legible
+  const processed = await sharp(inputBuffer)
+    .resize({ width: 3000, withoutEnlargement: false, fit: 'inside' })
+    .sharpen({ sigma: 2, m1: 1.5, m2: 0.7 })
+    .normalize()
+    .gamma(1.2)
+    .png()
+    .toBuffer();
+
+  return processed.toString('base64');
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
@@ -9,6 +27,9 @@ export default async function handler(req, res) {
   if (!image) return res.status(400).json({ error: 'No image provided' });
 
   try {
+    // Preprocess: upscale, sharpen, normalize contrast
+    const processedBase64 = await preprocessImage(image);
+
     const response = await anthropic.messages.create({
       model: 'claude-opus-4-20250514',
       max_tokens: 2048,
@@ -19,56 +40,41 @@ export default async function handler(req, res) {
             type: 'image',
             source: {
               type: 'base64',
-              media_type: 'image/jpeg',
-              data: image.replace(/^data:image\/\w+;base64,/, '')
+              media_type: 'image/png',
+              data: processedBase64
             }
           },
           {
             type: 'text',
-            text: `You are identifying American Mahjong tiles in a photo. The tiles are on a rack.
+            text: `Identify each American Mahjong tile in this photo. Tiles are on a rack.
 
-KEY SHORTCUT: Most American Mahjong tile sets print a SMALL NUMBER on each suited tile (usually in a corner or edge). Look for these numbers FIRST — they tell you the tile's value directly without needing to decode the imagery.
+IMPORTANT: The tiles are NOT all the same! Even tiles that look similar at first glance have DIFFERENT numbers. You must examine EACH tile individually. Do not assume adjacent tiles are identical.
 
-For each tile, left to right, do TWO things:
-1. FIND THE NUMBER: Look for a small printed numeral (1-9) on the tile
-2. IDENTIFY THE TYPE: Determine which of these 7 categories the tile belongs to
+For each tile, left to right:
 
-THE 7 TILE TYPES — how to tell them apart:
+1. FIND THE SMALL PRINTED ARABIC NUMERAL on the tile. It is typically near the top-right corner of the tile face, in a small font. This number tells you the tile's value (1-9). Read it carefully for EACH tile — nearby tiles will have DIFFERENT numbers.
 
-DOT: The main imagery is CIRCLES/DOTS arranged in a pattern. Colors vary by set but the shapes are always round circles. Look for the number printed on the tile to confirm the count.
+2. DETERMINE THE TILE TYPE from the main imagery:
+   - DOT: Round circles/rings (blue, red, or multicolored)
+   - BAMBOO (BAM): Green/teal vertical sticks or bars
+   - CHARACTER (CRAK): Chinese characters with 万/萬, often in a pagoda/lantern frame. Multiple Crak tiles share a similar ornate frame but have DIFFERENT numbers and different Chinese numerals (一=1, 二=2, 三=3, 四=4, 五=5, 六=6, 七=7, 八=8, 九=9)
+   - WIND: Large letter N, E, S, or W
+   - DRAGON: Red=中, Green=發, White/Soap=blank or border only
+   - FLOWER: Unique decorative scenes, each looks different
+   - JOKER: Says "JOKER"
 
-BAMBOO (BAM): The main imagery is STRAIGHT STICKS/BARS (bamboo). They are usually green or blue-green. 1-Bam is special — it often shows a bird instead of a single stick. Look for the number.
+3. VERIFY by counting imagery:
+   - For DOT tiles: count the distinct circles (ignore concentric inner rings within each circle). A 3-Dot has 3 separate circles. A 5-Dot has 5. An 8-Dot has 8.
+   - For BAM tiles: count the distinct bamboo sticks
+   - The count should match the printed number
 
-CHARACTER (CRAK): Has a RED Chinese character (万 or 萬) prominently displayed. The rest of the tile has Chinese numerals. These are the only tiles with prominent RED Chinese writing. Look for the number.
+For each tile, write:
+"Tile N: I see the printed number [X] in the top area. The imagery shows [description]. Type: [TYPE] → CODE"
 
-WIND: Shows a large LETTER — N, E, S, or W — or the Chinese character for that direction. No number needed, just read the letter.
+CRITICAL: Adjacent tiles of the same suit will have DIFFERENT values. If you wrote the same code for 2+ tiles in a row, go back and look more carefully — you probably missed a difference in the printed numbers.
 
-DRAGON: Three varieties:
-  - Red Dragon: Shows the red character 中 or says "Red"
-  - Green Dragon: Shows green character 發 or says "Green"/"Fa"
-  - White Dragon (Soap): Nearly BLANK — just a border or frame, no imagery
-
-FLOWER: Ornate, colorful, decorative scenes (flowers, birds, seasons). More artistic/detailed than any other tile. Often has "F" or a number 1-8.
-
-JOKER: Clearly says "JOKER" in text. Often has a jester image.
-
-PROCESS FOR EACH TILE:
-1. Look for a printed number on the tile
-2. Look at the main imagery to determine the type (circles=Dot, sticks=Bam, red Chinese character=Crak, letter=Wind, etc.)
-3. Combine: number + type = tile code
-
-OUTPUT FORMAT:
-Think through each tile, then provide the final answer.
-
-For each tile write one line:
-"Tile N: [what you see] → CODE"
-
-Then on the final line, provide ONLY a JSON array of all codes.
-
-CODES: 1D-9D (Dot), 1B-9B (Bam), 1C-9C (Crak), N/E/S/W (Wind), RD/GD/WD (Dragon), F (Flower), J (Joker)
-
-Example final line:
-["7C","8D","5D","J","7D","5B","N","2C","6D","3B","8B"]`
+LAST line: JSON array of codes.
+CODES: 1D-9D, 1B-9B, 1C-9C, N/E/S/W, RD/GD/WD, F, J`
           }
         ]
       }]
