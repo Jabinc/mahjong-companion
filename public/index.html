@@ -1956,8 +1956,17 @@
       const app = document.getElementById('app');
 
       app.addEventListener('click', e => {
+        // If click is inside a modal sheet but NOT on an action button, ignore it
+        // (prevents overlay close when clicking sheet background)
+        const sheet = e.target.closest('[data-modal-sheet]');
+        if (sheet && !e.target.closest('[data-action]')) return;
+
         const t = e.target.closest('[data-action]');
         if (!t) return;
+
+        // If the action is an overlay close and click originated inside the sheet, skip
+        if ((t.classList.contains('theme-sheet-overlay') || t.classList.contains('tile-picker-overlay')) && sheet) return;
+
         const action = t.dataset.action;
 
         switch (action) {
@@ -2116,7 +2125,7 @@
       const currentTheme = state.theme;
       return `
         <div class="theme-sheet-overlay" data-action="close-theme-picker">
-          <div class="theme-sheet" onclick="event.stopPropagation()">
+          <div class="theme-sheet" data-modal-sheet>
             <h3>Choose a Theme</h3>
             <p class="subtitle">Pick a vibe for your game</p>
             <div class="theme-grid">
@@ -2585,7 +2594,7 @@
 
       return `
         <div class="tile-picker-overlay" data-action="close-picker">
-          <div class="tile-picker-sheet" onclick="event.stopPropagation()">
+          <div class="tile-picker-sheet" data-modal-sheet>
             <h3>${isAdding ? 'Add a tile' : `Replace tile ${state.editingTileIndex + 1}`}</h3>
             ${!isAdding ? `<p style="font-size:12px;color:var(--text-light);margin-bottom:12px;text-align:center;">
               Replacing: ${renderTile(state.tiles[state.editingTileIndex])}
