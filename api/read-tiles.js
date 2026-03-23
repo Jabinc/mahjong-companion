@@ -9,8 +9,7 @@ export default async function handler(req, res) {
   if (!image) return res.status(400).json({ error: 'No image provided' });
 
   try {
-    // Step 1: Describe each tile in detail (chain-of-thought)
-    const describeResponse = await anthropic.messages.create({
+    const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2048,
       messages: [{
@@ -26,105 +25,68 @@ export default async function handler(req, res) {
           },
           {
             type: 'text',
-            text: `You are an expert at identifying American Mahjong tiles. Look at this photo of tiles on a rack.
+            text: `You are identifying American Mahjong tiles in a photo. The tiles are on a rack.
 
-IMPORTANT: Some tiles may be upside down or sideways. Look at the imagery carefully regardless of orientation.
+KEY SHORTCUT: Most American Mahjong tile sets print a SMALL NUMBER on each suited tile (usually in a corner or edge). Look for these numbers FIRST — they tell you the tile's value directly without needing to decode the imagery.
 
-Go through each tile from LEFT to RIGHT and describe what you see on its face. For each tile, note:
-- What imagery/symbols are on it (circles, bamboo sticks, Chinese characters, letters, etc.)
-- How many of those symbols there are (count carefully)
-- Any text or letters visible
-- The dominant colors
+For each tile, left to right, do TWO things:
+1. FIND THE NUMBER: Look for a small printed numeral (1-9) on the tile
+2. IDENTIFY THE TYPE: Determine which of these 7 categories the tile belongs to
 
-TILE IDENTIFICATION GUIDE:
+THE 7 TILE TYPES — how to tell them apart:
 
-DOT tiles: Show circular dots/circles arranged in patterns. Count the dots.
-- 1 Dot: One large circle, often ornate/decorated
-- 2 Dot: Two circles stacked vertically
-- 3 Dot: Three circles in a diagonal or triangle
-- 4 Dot: Four circles in a square pattern
-- 5 Dot: Five circles (four corners + center)
-- 6 Dot: Six circles in two columns of three
-- 7 Dot: Seven circles (varies by set)
-- 8 Dot: Eight circles in two columns of four
-- 9 Dot: Nine circles in three rows of three
+DOT: The main imagery is CIRCLES/DOTS arranged in a pattern. Colors vary by set but the shapes are always round circles. Look for the number printed on the tile to confirm the count.
 
-BAMBOO (BAM) tiles: Show green/blue bamboo sticks.
-- 1 Bam: Usually a bird or single ornate bamboo (often looks like a peacock/sparrow)
-- 2 Bam: Two bamboo sticks
-- 3 Bam: Three bamboo sticks
-- 4 Bam: Four bamboo sticks
-- 5 Bam: Five bamboo sticks
-- 6 Bam: Six bamboo sticks
-- 7 Bam: Seven bamboo sticks
-- 8 Bam: Eight bamboo sticks
-- 9 Bam: Nine bamboo sticks
+BAMBOO (BAM): The main imagery is STRAIGHT STICKS/BARS (bamboo). They are usually green or blue-green. 1-Bam is special — it often shows a bird instead of a single stick. Look for the number.
 
-CHARACTER (CRAK) tiles: Show a Chinese character with a red symbol (often 万/萬) at the top or bottom. The number is indicated by the Chinese numeral.
-- 1 Crak: 一 (one horizontal line)
-- 2 Crak: 二 (two horizontal lines)
-- 3 Crak: 三 (three horizontal lines)
-- 4 Crak: 四
-- 5 Crak: 五
-- 6 Crak: 六
-- 7 Crak: 七
-- 8 Crak: 八
-- 9 Crak: 九
-The red character 万/萬 (meaning 10,000) appears on every Crak tile.
+CHARACTER (CRAK): Has a RED Chinese character (万 or 萬) prominently displayed. The rest of the tile has Chinese numerals. These are the only tiles with prominent RED Chinese writing. Look for the number.
 
-WIND tiles: Show a letter (N, S, E, W) with directional imagery or Chinese characters for the wind directions.
+WIND: Shows a large LETTER — N, E, S, or W — or the Chinese character for that direction. No number needed, just read the letter.
 
-DRAGON tiles:
-- Red Dragon: Red Chinese character 中 (center) on white background
-- Green Dragon: Green character 發 or the word "Fa" in green
-- White Dragon (Soap): Blank tile or tile with just a border/frame, no imagery
+DRAGON: Three varieties:
+  - Red Dragon: Shows the red character 中 or says "Red"
+  - Green Dragon: Shows green character 發 or says "Green"/"Fa"
+  - White Dragon (Soap): Nearly BLANK — just a border or frame, no imagery
 
-FLOWER tiles: Ornate, decorative tiles showing flowers, seasons, or artistic scenes. Often more colorful and detailed than other tiles.
+FLOWER: Ornate, colorful, decorative scenes (flowers, birds, seasons). More artistic/detailed than any other tile. Often has "F" or a number 1-8.
 
-JOKER tiles: Clearly marked with the word "JOKER" or "J". Often have a jester/clown image.
+JOKER: Clearly says "JOKER" in text. Often has a jester image.
 
-Now describe each tile you see, left to right. Be specific about what you observe on each tile face.`
+PROCESS FOR EACH TILE:
+1. Look for a printed number on the tile
+2. Look at the main imagery to determine the type (circles=Dot, sticks=Bam, red Chinese character=Crak, letter=Wind, etc.)
+3. Combine: number + type = tile code
+
+OUTPUT FORMAT:
+Think through each tile, then provide the final answer.
+
+For each tile write one line:
+"Tile N: [what you see] → CODE"
+
+Then on the final line, provide ONLY a JSON array of all codes.
+
+CODES: 1D-9D (Dot), 1B-9B (Bam), 1C-9C (Crak), N/E/S/W (Wind), RD/GD/WD (Dragon), F (Flower), J (Joker)
+
+Example final line:
+["7C","8D","5D","J","7D","5B","N","2C","6D","3B","8B"]`
           }
         ]
       }]
     });
 
-    const descriptions = describeResponse.content[0].text.trim();
-
-    // Step 2: Classify based on descriptions
-    const classifyResponse = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1024,
-      messages: [{
-        role: 'user',
-        content: `Based on these tile descriptions from an American Mahjong hand, classify each tile.
-
-TILE DESCRIPTIONS:
-${descriptions}
-
-CLASSIFICATION CODES:
-- Bamboo: 1B through 9B
-- Character/Crak: 1C through 9C
-- Dot: 1D through 9D
-- Winds: N, E, S, W
-- Dragons: RD (Red), GD (Green), WD (White/Soap)
-- Flowers: F
-- Jokers: J
-
-Return ONLY a JSON array of tile codes in left-to-right order. Example:
-["7C","8D","5D","J","7D","5B","N","2C","6D","3B","8B"]
-
-Return ONLY the JSON array, no other text.`
-      }]
-    });
-
-    const text = classifyResponse.content[0].text.trim();
-    const match = text.match(/\[[\s\S]*?\]/);
+    const text = response.content[0].text.trim();
+    const match = text.match(/\[[\s\S]*?\]/g);
     if (!match) {
       return res.status(500).json({ error: 'Could not parse tiles', raw: text.slice(0, 500) });
     }
 
-    const tiles = JSON.parse(match[0]);
+    // Take the last JSON array found (the final answer after reasoning)
+    const tiles = JSON.parse(match[match.length - 1]);
+
+    // Extract the reasoning (everything before the final JSON array)
+    const lastArrayStart = text.lastIndexOf('[');
+    const descriptions = text.slice(0, lastArrayStart).trim();
+
     res.json({ tiles, descriptions });
   } catch (err) {
     console.error('Tile recognition error:', err);
