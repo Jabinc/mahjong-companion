@@ -24,9 +24,9 @@
       --text-light: #7a6f85;
       --shadow: rgba(200, 170, 190, 0.25);
       --shadow-strong: rgba(200, 170, 190, 0.4);
-      --red-tile: #e05555;
-      --green-tile: #4caf7a;
-      --blue-tile: #5b8cd4;
+      --red-tile: #e05c6c;
+      --green-tile: #3d9970;
+      --blue-tile: #5b8ed4;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,6 +38,7 @@
       min-height: 100vh;
       min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .app {
@@ -94,6 +95,7 @@
       color: var(--text-light);
       cursor: pointer;
       transition: all 0.25s ease;
+      touch-action: manipulation;
     }
 
     .nav-tab.active {
@@ -236,15 +238,15 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
     }
 
-    .tile.suit-bam { color: #2e7d32; }
-    .tile.suit-crak { color: #c62828; }
-    .tile.suit-dot { color: #1565c0; }
+    .tile.suit-bam { color: #3d9970; }
+    .tile.suit-crak { color: #e05c6c; }
+    .tile.suit-dot { color: #5b8ed4; }
     .tile.suit-wind { color: var(--text); }
-    .tile.suit-dragon.red { color: #c62828; }
-    .tile.suit-dragon.green { color: #2e7d32; }
+    .tile.suit-dragon.red { color: #e05c6c; }
+    .tile.suit-dragon.green { color: #3d9970; }
     .tile.suit-dragon.white { color: #888; border-style: dashed; }
-    .tile.suit-flower { color: #e65100; background: linear-gradient(180deg, #fff8e1 0%, #f0ebe3 100%); }
-    .tile.suit-joker { color: #7b1fa2; background: linear-gradient(180deg, #f3e5f5 0%, #f0ebe3 100%); }
+    .tile.suit-flower { color: #e8a34e; background: linear-gradient(180deg, #fff8e1 0%, #f0ebe3 100%); }
+    .tile.suit-joker { color: #9b7ed8; background: linear-gradient(180deg, #f3e5f5 0%, #f0ebe3 100%); }
 
     .tile.pass-tile {
       opacity: 0.5;
@@ -272,6 +274,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      touch-action: manipulation;
     }
 
     .btn:active { transform: scale(0.97); }
@@ -330,6 +333,7 @@
       cursor: pointer;
       text-align: center;
       transition: all 0.2s;
+      touch-action: manipulation;
     }
 
     .round-chip.active {
@@ -533,66 +537,6 @@
     .section { display: none; }
     .section.active { display: block; }
 
-    /* Edit tiles modal */
-    .edit-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-    }
-
-    .edit-sheet {
-      background: white;
-      border-radius: 24px 24px 0 0;
-      padding: 24px 20px 40px;
-      width: 100%;
-      max-width: 480px;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-
-    .edit-sheet h3 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      text-align: center;
-      color: var(--pink-dark);
-    }
-
-    .edit-input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid var(--pink-light);
-      border-radius: 12px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: 14px;
-      color: var(--text);
-      outline: none;
-      transition: border-color 0.2s;
-      margin-bottom: 8px;
-    }
-
-    .edit-input:focus { border-color: var(--pink); }
-
-    .edit-help {
-      font-size: 12px;
-      color: var(--text-light);
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    .edit-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .edit-actions .btn { flex: 1; }
-
     /* Toast */
     .toast {
       position: fixed;
@@ -713,6 +657,106 @@
       color: var(--pink-dark);
     }
 
+    /* Year card selector */
+    .card-year-selector {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .year-pill {
+      border: 2px solid var(--pink-light);
+      background: white;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+      touch-action: manipulation;
+    }
+
+    .year-pill.active {
+      border-color: var(--pink-dark);
+      background: var(--pink-dark);
+      color: white;
+    }
+
+    .year-pill.coming-soon {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .year-pill.coming-soon span {
+      font-style: italic;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    /* Tile picker */
+    .tile-picker-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .tile-picker-sheet {
+      background: white;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 16px 40px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 75vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+
+    .tile-picker-sheet h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      color: var(--pink-dark);
+      margin-bottom: 8px;
+    }
+
+    .picker-suit {
+      margin-bottom: 12px;
+    }
+
+    .picker-suit-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+
+    .picker-suit-tiles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .picker-tile {
+      cursor: pointer !important;
+      touch-action: manipulation;
+    }
+
+    .picker-tile:active {
+      transform: scale(0.9);
+    }
+
     /* Responsive */
     @media (max-width: 360px) {
       .tile { min-width: 28px; height: 38px; font-size: 11px; }
@@ -745,8 +789,10 @@
       // Highlight tiles (when user taps a target hand)
       highlightTiles: null,  // array of tile codes to highlight, or null
       highlightHandName: null,
-      // Edit modal
-      editOpen: false,
+      // Card year
+      cardYear: '2025',
+      // Tile picker
+      editingTileIndex: null,
       // Toast
       toastMsg: '',
       toastTimer: null,
@@ -756,12 +802,12 @@
 
     const CHARLESTON_ROUNDS = [
       { name: 'Right', dir: '→', label: '1st Right' },
-      { name: 'Across', dir: '↔', label: '1st Across' },
+      { name: 'Across', dir: '↕', label: '1st Across' },
       { name: 'Left', dir: '←', label: '1st Left' },
       { name: 'Left', dir: '←', label: '2nd Left' },
-      { name: 'Across', dir: '↔', label: '2nd Across' },
+      { name: 'Across', dir: '↕', label: '2nd Across' },
       { name: 'Right', dir: '→', label: '2nd Right' },
-      { name: 'Across', dir: '↔', label: 'Courtesy', optional: true }
+      { name: 'Across', dir: '↕', label: 'Optional Across', optional: true }
     ];
 
     // ─── SVG Icons ───
@@ -827,6 +873,19 @@
         return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="var(--coral)" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.1,8.3 22,9.3 17,14.1 18.2,21 12,17.8 5.8,21 7,14.1 2,9.3 8.9,8.3"/></svg>`;
       }
     };
+
+    function logoSvg() {
+      return `<svg width="72" height="36" viewBox="0 0 72 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="1" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
+        <rect x="25" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
+        <rect x="49" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
+        <text x="11" y="23" text-anchor="middle" font-family="serif" font-size="18" font-weight="bold" fill="#e05c6c">万</text>
+        <line x1="33" y1="8" x2="33" y2="28" stroke="#3d9970" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="37" y1="8" x2="37" y2="28" stroke="#3d9970" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="59" cy="18" r="6" fill="#5b8ed4"/>
+        <circle cx="59" cy="18" r="3" fill="#fff"/>
+      </svg>`;
+    }
 
     function setState(updates) {
       Object.assign(state, updates);
@@ -1053,25 +1112,37 @@
             recognizeTiles();
             break;
 
-          case 'edit-tiles':
-            setState({ editOpen: true });
-            setTimeout(() => {
-              const input = document.getElementById('editTilesInput');
-              if (input) { input.value = (state.tiles || []).join(', '); input.focus(); }
-            }, 50);
+          case 'tap-tile':
+            setState({ editingTileIndex: parseInt(t.dataset.index) });
             break;
 
-          case 'save-tiles':
-            const input = document.getElementById('editTilesInput');
-            if (input) {
-              const parsed = input.value.split(/[,\s]+/).map(s => s.trim().toUpperCase()).filter(Boolean);
-              setState({ tiles: parsed, editOpen: false, charlestonAdvice: null, matchResults: null });
-              toast('Tiles updated!');
+          case 'add-tile':
+            setState({ editingTileIndex: (state.tiles || []).length });
+            break;
+
+          case 'pick-tile': {
+            const newTiles = [...(state.tiles || [])];
+            const idx = state.editingTileIndex;
+            if (idx >= newTiles.length) {
+              newTiles.push(t.dataset.tile);
+            } else {
+              newTiles[idx] = t.dataset.tile;
             }
+            setState({ tiles: newTiles, editingTileIndex: null, charlestonAdvice: null, matchResults: null });
+            toast('Tile updated!');
             break;
+          }
 
-          case 'cancel-edit':
-            setState({ editOpen: false });
+          case 'delete-tile': {
+            const newTiles = [...(state.tiles || [])];
+            newTiles.splice(state.editingTileIndex, 1);
+            setState({ tiles: newTiles, editingTileIndex: null, charlestonAdvice: null, matchResults: null });
+            toast('Tile removed');
+            break;
+          }
+
+          case 'close-picker':
+            setState({ editingTileIndex: null });
             break;
 
           case 'charleston-advise':
@@ -1145,8 +1216,13 @@
       const app = document.getElementById('app');
       app.innerHTML = `
         <div class="header">
-          <h1><span>${icons.tile(32)}</span> Crack Bam Dot</h1>
+          <h1><span>${logoSvg()}</span> Crack Bam Dot</h1>
           <p>Your friendly helper for American Mahjong</p>
+        </div>
+
+        <div class="card-year-selector">
+          <button class="year-pill active">2025</button>
+          <button class="year-pill coming-soon" disabled>2026 <span>Coming Soon</span></button>
         </div>
 
         <div class="nav-tabs">
@@ -1179,7 +1255,7 @@
           ${renderTips()}
         </div>
 
-        ${state.editOpen ? renderEditModal() : ''}
+        ${state.editingTileIndex !== null ? renderTilePicker() : ''}
         ${state.toastMsg ? `<div class="toast">${state.toastMsg}</div>` : ''}
 
         <input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none">
@@ -1209,10 +1285,16 @@
           <div class="card">
             <div class="card-title"><span class="icon">${icons.card()}</span> Your Hand</div>
             <div class="tiles-row">
-              ${state.tiles.map(t => renderTile(t)).join('')}
+              ${state.tiles.map((t, i) => {
+                let highlightClass = '';
+                if (state.highlightTiles) {
+                  highlightClass = state.highlightTiles.includes(t) ? 'tile-highlighted' : 'tile-dimmed';
+                }
+                return `<span class="${tileClass(t)} ${highlightClass}" data-action="tap-tile" data-index="${i}" title="${tileName(t)}" style="cursor:pointer">${tileName(t)}</span>`;
+              }).join('')}
             </div>
             <p style="font-size: 12px; color: var(--text-light); text-align: center; margin-top: 4px;">
-              Not right? Tap <strong>Edit Tiles</strong> to fix
+              Tap a tile to change it
             </p>
             ${state.tileDescriptions ? `
               <details style="margin-top: 8px;">
@@ -1221,7 +1303,7 @@
               </details>
             ` : ''}
             <div style="display: flex; gap: 8px; margin-top: 8px;">
-              <button class="btn btn-secondary btn-small" data-action="edit-tiles" style="flex:1">Edit Tiles</button>
+              <button class="btn btn-secondary btn-small" data-action="add-tile" style="flex:1">+ Add Tile</button>
               <button class="btn btn-secondary btn-small" data-action="upload" style="flex:1">New Photo</button>
               <button class="btn btn-secondary btn-small" data-action="new-hand" style="flex:0">✕</button>
             </div>
@@ -1521,23 +1603,39 @@
       `;
     }
 
-    function renderEditModal() {
+    function renderTilePicker() {
+      if (state.editingTileIndex === null) return '';
+
+      const allTiles = {
+        'Crak': ['1C','2C','3C','4C','5C','6C','7C','8C','9C'],
+        'Bam': ['1B','2B','3B','4B','5B','6B','7B','8B','9B'],
+        'Dot': ['1D','2D','3D','4D','5D','6D','7D','8D','9D'],
+        'Wind': ['N','E','S','W'],
+        'Dragon': ['RD','GD','WD'],
+        'Special': ['F','J']
+      };
+
+      const isAdding = state.editingTileIndex >= (state.tiles || []).length;
+
       return `
-        <div class="edit-overlay" data-action="cancel-edit">
-          <div class="edit-sheet" onclick="event.stopPropagation()">
-            <h3>Edit Your Tiles</h3>
-            <input class="edit-input" id="editTilesInput" type="text"
-                   placeholder="e.g. 1B, 2C, 5D, F, J, N, RD">
-            <p class="edit-help">
-              <strong>Suits:</strong> 1B-9B (Bam), 1C-9C (Crak), 1D-9D (Dot)<br>
-              <strong>Winds:</strong> N, E, S, W<br>
-              <strong>Dragons:</strong> RD (Red), GD (Green), WD (Soap)<br>
-              <strong>Special:</strong> F (Flower), J (Joker)
-            </p>
-            <div class="edit-actions">
-              <button class="btn btn-secondary" data-action="cancel-edit">Cancel</button>
-              <button class="btn btn-primary" data-action="save-tiles">Save</button>
-            </div>
+        <div class="tile-picker-overlay" data-action="close-picker">
+          <div class="tile-picker-sheet" onclick="event.stopPropagation()">
+            <h3>${isAdding ? 'Add a tile' : `Replace tile ${state.editingTileIndex + 1}`}</h3>
+            ${!isAdding ? `<p style="font-size:12px;color:var(--text-light);margin-bottom:12px;text-align:center;">
+              Replacing: ${renderTile(state.tiles[state.editingTileIndex])}
+            </p>` : ''}
+            ${Object.entries(allTiles).map(([suitName, tiles]) => `
+              <div class="picker-suit">
+                <div class="picker-suit-label">${suitName}</div>
+                <div class="picker-suit-tiles">
+                  ${tiles.map(t => `
+                    <span class="${tileClass(t)} picker-tile" data-action="pick-tile" data-tile="${t}" title="${tileName(t)}">${tileName(t)}</span>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+            ${!isAdding ? `<button class="btn btn-secondary" data-action="delete-tile" style="margin-top:12px;">Remove this tile</button>` : ''}
+            <button class="btn btn-secondary" data-action="close-picker" style="margin-top:8px;">Cancel</button>
           </div>
         </div>
       `;
