@@ -102,7 +102,7 @@
       box-shadow: 0 2px 8px var(--shadow);
     }
 
-    .nav-tab .tab-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+    .nav-tab .tab-icon { font-size: 18px; display: flex; justify-content: center; margin-bottom: 2px; }
 
     /* Cards */
     .card {
@@ -125,7 +125,11 @@
       gap: 8px;
     }
 
-    .card-title .icon { font-size: 20px; }
+    .card-title .icon { font-size: 20px; display: inline-flex; align-items: center; }
+    .card-title .icon svg, .tab-icon svg, .tip-icon svg,
+    .upload-icon svg, .btn svg, .advice-header svg, .hand-match-name svg {
+      display: inline-block; vertical-align: middle;
+    }
 
     /* Photo upload zone */
     .upload-zone {
@@ -144,7 +148,7 @@
       transform: scale(1.01);
     }
 
-    .upload-zone .upload-icon { font-size: 48px; margin-bottom: 8px; }
+    .upload-zone .upload-icon { font-size: 48px; margin-bottom: 8px; display: flex; justify-content: center; }
 
     .upload-zone p {
       font-size: 14px;
@@ -308,6 +312,7 @@
     /* Charleston rounds */
     .charleston-rounds {
       display: flex;
+      flex-wrap: wrap;
       gap: 6px;
       margin-bottom: 16px;
     }
@@ -340,6 +345,18 @@
     }
 
     .round-chip .dir { font-size: 14px; display: block; }
+
+    .round-chip.optional {
+      border-style: dashed;
+      opacity: 0.8;
+    }
+
+    .round-chip.optional.active {
+      opacity: 1;
+      border-color: var(--lavender);
+      background: var(--lavender-light);
+      color: var(--text);
+    }
 
     /* Advice section */
     .advice-section {
@@ -400,7 +417,7 @@
       align-items: flex-start;
     }
 
-    .tip-card .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .tip-card .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; display: inline-flex; align-items: center; }
 
     .tip-card p {
       font-size: 13px;
@@ -640,8 +657,73 @@
       { name: 'Left', dir: '←', label: '1st Left' },
       { name: 'Left', dir: '←', label: '2nd Left' },
       { name: 'Across', dir: '↔', label: '2nd Across' },
-      { name: 'Right', dir: '→', label: '2nd Right' }
+      { name: 'Right', dir: '→', label: '2nd Right' },
+      { name: 'Across', dir: '↔', label: 'Courtesy', optional: true }
     ];
+
+    // ─── SVG Icons ───
+    const icons = {
+      tile(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="3"/><circle cx="12" cy="12" r="3" fill="var(--coral)" stroke="none"/></svg>`;
+      },
+      cycle(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>`;
+      },
+      target(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="var(--coral)" stroke="none"/></svg>`;
+      },
+      bulb(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--lavender)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" fill="var(--lavender-light)"/></svg>`;
+      },
+      card(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 8v4"/><path d="M10 10h4"/></svg>`;
+      },
+      camera(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+      },
+      search(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>`;
+      },
+      thought(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-11.2-2A4.5 4.5 0 0 0 5 15h13a4 4 0 0 0 0-8z" fill="var(--lavender-light)"/><circle cx="8" cy="19" r="1.5" fill="var(--lavender)"/><circle cx="5" cy="22" r="1" fill="var(--lavender)"/></svg>`;
+      },
+      flower(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.5" fill="var(--coral)"/><circle cx="12" cy="7" r="3" fill="none"/><circle cx="16.5" cy="10" r="3" fill="none"/><circle cx="14.5" cy="15.5" r="3" fill="none"/><circle cx="9.5" cy="15.5" r="3" fill="none"/><circle cx="7.5" cy="10" r="3" fill="none"/></svg>`;
+      },
+      joker(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--lavender)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9" fill="var(--lavender-light)"/></svg>`;
+      },
+      pairs(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--mint-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="8" r="4"/><path d="M4 20c0-3 2-5 4-5s4 2 4 5"/><path d="M12 20c0-3 2-5 4-5s4 2 4 5"/></svg>`;
+      },
+      warning(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 22h20L12 2z" fill="var(--peach)"/><line x1="12" y1="9" x2="12" y2="15"/><circle cx="12" cy="18" r="0.5" fill="var(--coral)"/></svg>`;
+      },
+      gamepiece(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>`;
+      },
+      eyes(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="8" cy="12" rx="3" ry="4"/><ellipse cx="16" cy="12" rx="3" ry="4"/><circle cx="8" cy="12" r="1.2" fill="var(--text)"/><circle cx="16" cy="12" r="1.2" fill="var(--text)"/></svg>`;
+      },
+      shield(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--mint-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="var(--mint)"/></svg>`;
+      },
+      book(size = 22) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`;
+      },
+      numbers(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><text x="2" y="17" font-family="Outfit,sans-serif" font-size="14" font-weight="700" fill="var(--text-light)" stroke="none">123</text></svg>`;
+      },
+      palette(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-1 19.9c.6.1 1-.4 1-1v-1.5a1 1 0 0 0-1-1H9a3 3 0 0 1-2.8-2 3.4 3.4 0 0 0-.8-1.3c-.4-.3-.1-.6.3-.6a2 2 0 0 1 1.7 1.1 2 2 0 0 0 2.8.8 2 2 0 0 1 .6-1.2C8 14.7 5 13.5 5 9a5 5 0 0 1 1.3-3.5A4.6 4.6 0 0 1 6.5 2a4.6 4.6 0 0 1 3.5 1.5 12 12 0 0 1 4 0A4.6 4.6 0 0 1 17.5 2a4.6 4.6 0 0 1 .2 3.5A5 5 0 0 1 19 9c0 4.5-3 5.7-5.8 6a2.2 2.2 0 0 1 .6 1.7V21c0 .6.4 1.1 1 1A10 10 0 0 0 12 2z"/></svg>`;
+      },
+      hand(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v1"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8 2 2 0 0 1 4 0"/></svg>`;
+      },
+      star(size = 18) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="var(--coral)" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.1,8.3 22,9.3 17,14.1 18.2,21 12,17.8 5.8,21 7,14.1 2,9.3 8.9,8.3"/></svg>`;
+      }
+    };
 
     function setState(updates) {
       Object.assign(state, updates);
@@ -943,19 +1025,19 @@
       const app = document.getElementById('app');
       app.innerHTML = `
         <div class="header">
-          <h1><span>🀄</span> Mahjong Companion</h1>
+          <h1><span>${icons.tile(32)}</span> Mahjong Companion</h1>
           <p>Your friendly helper for American Mahjong</p>
         </div>
 
         <div class="nav-tabs">
           <button class="nav-tab ${state.tab === 'charleston' ? 'active' : ''}" data-action="tab" data-tab="charleston">
-            <span class="tab-icon">🔄</span>Charleston
+            <span class="tab-icon">${icons.cycle(18)}</span>Charleston
           </button>
           <button class="nav-tab ${state.tab === 'hands' ? 'active' : ''}" data-action="tab" data-tab="hands">
-            <span class="tab-icon">🎯</span>Hand Match
+            <span class="tab-icon">${icons.target(18)}</span>Hand Match
           </button>
           <button class="nav-tab ${state.tab === 'tips' ? 'active' : ''}" data-action="tab" data-tab="tips">
-            <span class="tab-icon">💡</span>Tips
+            <span class="tab-icon">${icons.bulb(18)}</span>Tips
           </button>
         </div>
 
@@ -1005,7 +1087,7 @@
       if (state.tiles) {
         return `
           <div class="card">
-            <div class="card-title"><span class="icon">🎴</span> Your Hand</div>
+            <div class="card-title"><span class="icon">${icons.card()}</span> Your Hand</div>
             <div class="tiles-row">
               ${state.tiles.map(t => renderTile(t)).join('')}
             </div>
@@ -1030,7 +1112,7 @@
       if (state.handPreview) {
         return `
           <div class="card">
-            <div class="card-title"><span class="icon">📸</span> Your Tiles</div>
+            <div class="card-title"><span class="icon">${icons.camera()}</span> Your Tiles</div>
             <div class="preview-container">
               <img src="${state.handPreview}" alt="Hand photo" style="transform: rotate(${state.handRotation}deg)">
               <div class="preview-overlay">
@@ -1039,7 +1121,7 @@
               </div>
             </div>
             <button class="btn btn-primary" data-action="recognize">
-              🔍 Read My Tiles
+              ${icons.search(18)} Read My Tiles
             </button>
           </div>
         `;
@@ -1047,9 +1129,9 @@
 
       return `
         <div class="card">
-          <div class="card-title"><span class="icon">📸</span> Snap Your Tiles</div>
+          <div class="card-title"><span class="icon">${icons.camera()}</span> Snap Your Tiles</div>
           <div class="upload-zone" data-action="upload">
-            <div class="upload-icon">🀄</div>
+            <div class="upload-icon">${icons.tile(48)}</div>
             <p>Tap to take a photo of your tiles</p>
             <p class="hint">Make sure all tiles are right-side up!</p>
             <p class="hint">or drag & drop an image here</p>
@@ -1062,7 +1144,7 @@
       if (!state.tiles) {
         return `
           <div class="card">
-            <div class="card-title"><span class="icon">🔄</span> Charleston Helper</div>
+            <div class="card-title"><span class="icon">${icons.cycle()}</span> Charleston Helper</div>
             <p style="font-size: 14px; color: var(--text-light); text-align: center; padding: 20px 0;">
               Take a photo of your tiles to get Charleston advice
             </p>
@@ -1071,10 +1153,10 @@
       }
 
       const roundsHtml = CHARLESTON_ROUNDS.map((r, i) => `
-        <button class="round-chip ${i === state.charlestonRound ? 'active' : ''} ${state.charlestonHistory.includes(i) ? 'completed' : ''}"
+        <button class="round-chip ${i === state.charlestonRound ? 'active' : ''} ${state.charlestonHistory.includes(i) ? 'completed' : ''} ${r.optional ? 'optional' : ''}"
                 data-action="charleston-round" data-round="${i}">
           <span class="dir">${r.dir}</span>
-          ${r.label}
+          ${r.label}${r.optional ? '<br><span style="font-size:9px;opacity:0.7">(optional)</span>' : ''}
         </button>
       `).join('');
 
@@ -1117,7 +1199,7 @@
 
             ${a.target_hands ? `
               <div style="margin-bottom: 12px;">
-                <div class="advice-header">🎯 Target Hands</div>
+                <div class="advice-header">${icons.target(18)} Target Hands</div>
                 ${a.target_hands.map(h => `
                   <div style="font-size: 13px; color: var(--text); padding: 2px 0;">• ${h}</div>
                 `).join('')}
@@ -1126,7 +1208,7 @@
 
             ${(a.tips || []).map(tip => `
               <div class="tip-card">
-                <span class="tip-icon">💡</span>
+                <span class="tip-icon">${icons.bulb(18)}</span>
                 <p>${tip}</p>
               </div>
             `).join('')}
@@ -1136,18 +1218,18 @@
 
       return `
         <div class="card">
-          <div class="card-title"><span class="icon">🔄</span> Charleston Helper</div>
+          <div class="card-title"><span class="icon">${icons.cycle()}</span> Charleston Helper</div>
           <div class="charleston-rounds">${roundsHtml}</div>
 
           ${adviceHtml || `
             <button class="btn btn-primary" data-action="charleston-advise" ${!state.tiles ? 'disabled' : ''}>
-              🤔 What Should I Pass?
+              ${icons.thought(18)} What Should I Pass?
             </button>
           `}
 
           ${state.charlestonAdvice ? `
             <button class="btn btn-secondary" data-action="charleston-advise" style="margin-top: 8px;">
-              🔄 Re-analyze
+              ${icons.cycle(18)} Re-analyze
             </button>
           ` : ''}
         </div>
@@ -1158,7 +1240,7 @@
       if (!state.tiles) {
         return `
           <div class="card">
-            <div class="card-title"><span class="icon">🎯</span> Hand Matcher</div>
+            <div class="card-title"><span class="icon">${icons.target()}</span> Hand Matcher</div>
             <p style="font-size: 14px; color: var(--text-light); text-align: center; padding: 20px 0;">
               Take a photo of your tiles to find matching hands
             </p>
@@ -1169,7 +1251,7 @@
       if (state.matchLoading) {
         return `
           <div class="card">
-            <div class="card-title"><span class="icon">🎯</span> Hand Matcher</div>
+            <div class="card-title"><span class="icon">${icons.target()}</span> Hand Matcher</div>
             <div class="loading">
               <div class="loading-tiles">
                 <div class="loading-tile"></div>
@@ -1187,7 +1269,7 @@
         const r = state.matchResults;
         return `
           <div class="card">
-            <div class="card-title"><span class="icon">🎯</span> Hand Matcher</div>
+            <div class="card-title"><span class="icon">${icons.target()}</span> Hand Matcher</div>
 
             ${r.recommendation ? `
               <div class="advice-keep" style="margin-bottom: 16px;">
@@ -1198,7 +1280,7 @@
             ${(r.matches || []).map((m, i) => `
               <div class="hand-match">
                 <div class="hand-match-header">
-                  <span class="hand-match-name">${i === 0 ? '⭐ ' : ''}${m.hand_name}</span>
+                  <span class="hand-match-name">${i === 0 ? icons.star(16) + ' ' : ''}${m.hand_name}</span>
                   <span class="hand-match-score">${m.tiles_have}/${m.tiles_have + m.tiles_need}</span>
                 </div>
                 <div class="hand-match-category">${m.category || ''} ${m.difficulty ? `<span class="difficulty ${m.difficulty}">${m.difficulty}</span>` : ''}</div>
@@ -1220,7 +1302,7 @@
             ` : ''}
 
             <button class="btn btn-secondary" data-action="match-hands" style="margin-top: 8px;">
-              🔄 Re-analyze
+              ${icons.cycle(18)} Re-analyze
             </button>
           </div>
         `;
@@ -1228,9 +1310,9 @@
 
       return `
         <div class="card">
-          <div class="card-title"><span class="icon">🎯</span> Hand Matcher</div>
+          <div class="card-title"><span class="icon">${icons.target()}</span> Hand Matcher</div>
           <button class="btn btn-primary" data-action="match-hands">
-            🔍 Find Matching Hands
+            ${icons.search(18)} Find Matching Hands
           </button>
         </div>
       `;
@@ -1239,57 +1321,57 @@
     function renderTips() {
       return `
         <div class="card">
-          <div class="card-title"><span class="icon">🔄</span> Charleston Tips</div>
+          <div class="card-title"><span class="icon">${icons.cycle()}</span> Charleston Tips</div>
           <div class="tip-card">
-            <span class="tip-icon">🌸</span>
+            <span class="tip-icon">${icons.flower()}</span>
             <p><strong>Never pass Flowers</strong> unless you're 100% sure your target hand doesn't use them. Flowers are rare (only 8 in the set) and appear in most winning hands.</p>
           </div>
           <div class="tip-card">
-            <span class="tip-icon">🃏</span>
+            <span class="tip-icon">${icons.joker()}</span>
             <p><strong>Jokers can't be passed</strong> during the Charleston. They stay in your hand — and they're wildcards that can substitute for any tile in an exposed group.</p>
           </div>
           <div class="tip-card">
-            <span class="tip-icon">👯</span>
+            <span class="tip-icon">${icons.pairs()}</span>
             <p><strong>Keep pairs and triples.</strong> If you have two or three of the same tile, hold onto them! Pairs are hard to rebuild and form the backbone of most hands.</p>
           </div>
           <div class="tip-card">
-            <span class="tip-icon">🙈</span>
+            <span class="tip-icon">${icons.warning()}</span>
             <p><strong>Don't pass matching suits together.</strong> Passing 3-Bam and 5-Bam in the same round could hand someone exactly what they need for a consecutive run.</p>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title"><span class="icon">🎮</span> During Play</div>
+          <div class="card-title"><span class="icon">${icons.gamepiece()}</span> During Play</div>
           <div class="tip-card">
-            <span class="tip-icon">🎯</span>
+            <span class="tip-icon">${icons.target(18)}</span>
             <p><strong>Stay flexible early.</strong> Don't commit to one hand too early — keep tiles that work across multiple hands until the picture becomes clearer.</p>
           </div>
           <div class="tip-card">
-            <span class="tip-icon">👀</span>
+            <span class="tip-icon">${icons.eyes()}</span>
             <p><strong>Watch the discards.</strong> If tiles you need are being discarded by others, it might be time to switch to a different hand.</p>
           </div>
           <div class="tip-card">
-            <span class="tip-icon">🛡️</span>
+            <span class="tip-icon">${icons.shield()}</span>
             <p><strong>Play defense.</strong> If another player has many exposures (called tiles), be careful about discarding tiles they might need. When in doubt, discard what's already been discarded.</p>
           </div>
           <div class="tip-card">
-            <span class="tip-icon">🔄</span>
+            <span class="tip-icon">${icons.cycle(18)}</span>
             <p><strong>Know when to switch.</strong> If you're more than 5 tiles away from your target hand by mid-game, consider pivoting to something closer.</p>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title"><span class="icon">📖</span> Reading the Card</div>
+          <div class="card-title"><span class="icon">${icons.book()}</span> Reading the Card</div>
           <div class="tip-card">
-            <span class="tip-icon">🔢</span>
+            <span class="tip-icon">${icons.numbers()}</span>
             <p><strong>Numbers in the hand</strong> represent specific tile values. "2024" means tiles 2, 0, 2, 4 (where 0 is represented by a specific tile for that year).</p>
           </div>
           <div class="tip-card">
-            <span class="tip-icon">🎨</span>
+            <span class="tip-icon">${icons.palette()}</span>
             <p><strong>Colors matter!</strong> Tiles shown in the same color on the card must be the same suit. Different colors = different suits. You pick which suit, but stay consistent.</p>
           </div>
           <div class="tip-card">
-            <span class="tip-icon">✋</span>
+            <span class="tip-icon">${icons.hand()}</span>
             <p><strong>C = Concealed, X = Exposed.</strong> Some hands (or parts of hands) must be concealed (no calling tiles). Hands marked with a "C" must be won entirely from the wall or by self-draw. "X" means you can call discards.</p>
           </div>
         </div>
