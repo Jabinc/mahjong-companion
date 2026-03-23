@@ -8,67 +8,56 @@ export default async function handler(req, res) {
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) return res.status(500).json({ error: 'Google API key not configured' });
 
-    // Try multiple model/method combinations
-    const attempts = [
-      // Gemini 2.0 Flash with native image generation
-      {
-        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-        body: {
-          contents: [{ parts: [{ text: `Generate an image: ${prompt}` }] }],
-          generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
-        },
-        extract: (data) => {
-          const parts = data.candidates?.[0]?.content?.parts || [];
-          const imgPart = parts.find(p => p.inlineData);
-          return imgPart?.inlineData?.data;
-        }
-      },
-      // Imagen 3 via predict
-      {
-        url: `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
-        body: {
-          instances: [{ prompt }],
-          parameters: { sampleCount: 1, aspectRatio: '9:16', safetyFilterLevel: 'block_some' }
-        },
-        extract: (data) => data.predictions?.[0]?.bytesBase64Encoded
-      },
-      // Gemini 2.0 Flash preview-image
-      {
-        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${apiKey}`,
-        body: {
-          contents: [{ parts: [{ text: `Generate an image: ${prompt}` }] }],
-          generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
-        },
-        extract: (data) => {
-          const parts = data.candidates?.[0]?.content?.parts || [];
-          const imgPart = parts.find(p => p.inlineData);
-          return imgPart?.inlineData?.data;
-        }
-      }
+    const imagePrompt = `Generate an image: ${prompt}`;
+    const geminiBody = {
+      contents: [{ parts: [{ text: imagePrompt }] }],
+      generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
+    };
+    const geminiExtract = (data) => {
+      const parts = data.candidates?.[0]?.content?.parts || [];
+      const imgPart = parts.find(p => p.inlineData);
+      return imgPart?.inlineData?.data;
+    };
+
+    // Try models in order — current Gemini image generation model names
+    const models = [
+      'gemini-2.5-flash-image',
+      'gemini-3.1-flash-image-preview',
+      'gemini-3-pro-image-preview',
+      'imagen-4.0-generate-001',
     ];
 
     let lastError = null;
 
-    for (const attempt of attempts) {
+    for (const model of models) {
       try {
-        const response = await fetch(attempt.url, {
+        const isImagen = model.startsWith('imagen');
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:${isImagen ? 'predict' : 'generateContent'}?key=${apiKey}`;
+        const body = isImagen
+          ? { instances: [{ prompt }], parameters: { sampleCount: 1, aspectRatio: '9:16', safetyFilterLevel: 'block_some' } }
+          : geminiBody;
+        const extract = isImagen
+          ? (data) => data.predictions?.[0]?.bytesBase64Encoded
+          : geminiExtract;
+
+        const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(attempt.body)
+          body: JSON.stringify(body)
         });
 
         const data = await response.json();
-        const imageBase64 = attempt.extract(data);
+        const imageBase64 = extract(data);
 
         if (imageBase64) {
           return res.json({ image: `data:image/png;base64,${imageBase64}` });
         }
 
-        lastError = { url: attempt.url.split('?')[0], status: response.status, data };
-        console.error(`Attempt failed:`, JSON.stringify(data).slice(0, 500));
+        lastError = { model, status: response.status, error: data.error?.message || 'No image returned' };
+        console.error(`Model ${model} failed:`, data.error?.message || 'No image');
       } catch (fetchErr) {
-        lastError = { url: attempt.url.split('?')[0], error: fetchErr.message };
-        console.error(`Fetch error:`, fetchErr.message);
+        lastError = { model, error: fetchErr.message };
+        console.error(`Model ${model} fetch error:`, fetchErr.message);
       }
     }
 
