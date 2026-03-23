@@ -10,7 +10,20 @@ export default async function handler(req, res) {
 
     // Try multiple model/method combinations
     const attempts = [
-      // Gemini API style: generateImages
+      // Gemini 2.0 Flash with native image generation
+      {
+        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        body: {
+          contents: [{ parts: [{ text: `Generate an image: ${prompt}` }] }],
+          generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
+        },
+        extract: (data) => {
+          const parts = data.candidates?.[0]?.content?.parts || [];
+          const imgPart = parts.find(p => p.inlineData);
+          return imgPart?.inlineData?.data;
+        }
+      },
+      // Imagen 3 via predict
       {
         url: `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
         body: {
@@ -19,11 +32,11 @@ export default async function handler(req, res) {
         },
         extract: (data) => data.predictions?.[0]?.bytesBase64Encoded
       },
-      // Alternative: Gemini generateContent with image generation
+      // Gemini 2.0 Flash preview-image
       {
-        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`,
+        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${apiKey}`,
         body: {
-          contents: [{ parts: [{ text: prompt }] }],
+          contents: [{ parts: [{ text: `Generate an image: ${prompt}` }] }],
           generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
         },
         extract: (data) => {
