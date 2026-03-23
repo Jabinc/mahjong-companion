@@ -749,7 +749,7 @@
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const maxSize = 1400;
+          const maxSize = 2000;
           let w = img.width, h = img.height;
           const rot = state.handRotation;
           const swap = rot === 90 || rot === 270;
@@ -768,7 +768,7 @@
           ctx.translate(canvas.width / 2, canvas.height / 2);
           ctx.rotate((rot * Math.PI) / 180);
           ctx.drawImage(img, -w / 2, -h / 2, w, h);
-          resolve(canvas.toDataURL('image/jpeg', 0.88));
+          resolve(canvas.toDataURL('image/jpeg', 0.95));
         };
         img.src = state.handImage;
       });
