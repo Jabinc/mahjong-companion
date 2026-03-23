@@ -613,6 +613,106 @@
 
     .toast.show { transform: translateX(-50%) translateY(0); }
 
+    /* Tile highlighting */
+    .tile-highlighted {
+      box-shadow: 0 0 0 3px var(--pink-dark), 0 4px 12px var(--shadow-strong) !important;
+      transform: translateY(-3px);
+      transition: all 0.25s ease;
+    }
+
+    .tile-dimmed {
+      opacity: 0.3;
+      transition: all 0.25s ease;
+    }
+
+    /* Pass reason cards */
+    .pass-reason {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #fff5f0;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      border-left: 3px solid var(--coral);
+    }
+
+    .pass-reason .pass-reason-tile {
+      flex-shrink: 0;
+    }
+
+    .pass-reason .pass-reason-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    /* Target hand cards */
+    .target-hand {
+      padding: 12px 14px;
+      background: var(--warm-white);
+      border-radius: 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 2px solid transparent;
+    }
+
+    .target-hand:hover {
+      border-color: var(--pink-light);
+      background: white;
+    }
+
+    .target-hand.active {
+      border-color: var(--pink-dark);
+      background: white;
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+
+    .target-hand-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--pink-dark);
+      margin-bottom: 4px;
+    }
+
+    .target-hand-category {
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .target-hand-fit {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 6px;
+    }
+
+    .target-hand-needs {
+      font-size: 12px;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    .target-hand-hint {
+      font-size: 11px;
+      color: var(--lavender);
+      font-weight: 600;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .target-hand.active .target-hand-hint {
+      color: var(--pink-dark);
+    }
+
     /* Responsive */
     @media (max-width: 360px) {
       .tile { min-width: 28px; height: 38px; font-size: 11px; }
@@ -642,6 +742,9 @@
       // Hand matching
       matchResults: null,
       matchLoading: false,
+      // Highlight tiles (when user taps a target hand)
+      highlightTiles: null,  // array of tile codes to highlight, or null
+      highlightHandName: null,
       // Edit modal
       editOpen: false,
       // Toast
@@ -773,7 +876,11 @@
     }
 
     function renderTile(code, extraClass = '') {
-      return `<span class="${tileClass(code)} ${extraClass}" title="${tileName(code)}">${tileName(code)}</span>`;
+      let highlightClass = '';
+      if (state.highlightTiles) {
+        highlightClass = state.highlightTiles.includes(code) ? 'tile-highlighted' : 'tile-dimmed';
+      }
+      return `<span class="${tileClass(code)} ${extraClass} ${highlightClass}" title="${tileName(code)}">${tileName(code)}</span>`;
     }
 
     // ─── Image handling ───
@@ -974,7 +1081,9 @@
           case 'charleston-round':
             setState({
               charlestonRound: parseInt(t.dataset.round),
-              charlestonAdvice: null
+              charlestonAdvice: null,
+              highlightTiles: null,
+              highlightHandName: null
             });
             break;
 
@@ -982,11 +1091,22 @@
             getHandMatches();
             break;
 
+          case 'highlight-hand':
+            const handName = t.dataset.handName;
+            const handTiles = JSON.parse(t.dataset.handTiles || '[]');
+            if (state.highlightHandName === handName) {
+              // Toggle off if already active
+              setState({ highlightTiles: null, highlightHandName: null });
+            } else {
+              setState({ highlightTiles: handTiles, highlightHandName: handName });
+            }
+            break;
+
           case 'new-hand':
             setState({
               handImage: null, handPreview: null, handRotation: 0,
               tiles: null, charlestonAdvice: null, matchResults: null,
-              charlestonRound: 0, charlestonHistory: [], error: null
+              charlestonRound: 0, charlestonHistory: [], highlightTiles: null, highlightHandName: null, error: null
             });
             break;
         }
@@ -1178,31 +1298,54 @@
         const passTiles = a.pass || [];
         const keepTiles = (state.tiles || []).filter(t => !passTiles.includes(t));
 
+        const passReasons = a.pass_reasons || [];
+
         adviceHtml = `
           <div class="advice-section">
             <div class="advice-pass">
               <div class="advice-label">Pass these 3 tiles ${CHARLESTON_ROUNDS[state.charlestonRound].dir}</div>
-              <div class="tiles-row" style="justify-content: flex-start;">
-                ${passTiles.map(t => renderTile(t, 'pass-tile')).join('')}
-              </div>
+              ${passReasons.length > 0 ? passReasons.map(pr => `
+                <div class="pass-reason">
+                  <span class="pass-reason-tile">${renderTile(pr.tile, 'pass-tile')}</span>
+                  <span class="pass-reason-text">${pr.reason}</span>
+                </div>
+              `).join('') : `
+                <div class="tiles-row" style="justify-content: flex-start;">
+                  ${passTiles.map(t => renderTile(t, 'pass-tile')).join('')}
+                </div>
+              `}
             </div>
 
             <div class="advice-keep">
-              <div class="advice-label">Keep building with</div>
-              <div class="tiles-row" style="justify-content: flex-start; flex-wrap: wrap;">
-                ${keepTiles.map(t => renderTile(t, 'keep-tile')).join('')}
-              </div>
-              <p class="strategy-text" style="margin-top: 10px;">
+              <div class="advice-label">Your strategy</div>
+              <p class="strategy-text" style="margin-bottom: 10px;">
                 ${a.keep_strategy || ''}
               </p>
             </div>
 
-            ${a.target_hands ? `
+            ${a.target_hands && a.target_hands.length > 0 ? `
               <div style="margin-bottom: 12px;">
-                <div class="advice-header">${icons.target(18)} Target Hands</div>
-                ${a.target_hands.map(h => `
-                  <div style="font-size: 13px; color: var(--text); padding: 2px 0;">• ${h}</div>
-                `).join('')}
+                <div class="advice-header">${icons.target(18)} Hands You're Playing Toward</div>
+                <p style="font-size: 12px; color: var(--text-light); margin-bottom: 8px;">Tap a hand to highlight the tiles in your hand that match it</p>
+                ${a.target_hands.map((h, idx) => {
+                  const handName = typeof h === 'string' ? h : h.name;
+                  const relevantTiles = typeof h === 'object' ? (h.relevant_tiles || []) : [];
+                  const isActive = state.highlightHandName === handName;
+                  return `
+                    <div class="target-hand ${isActive ? 'active' : ''}"
+                         data-action="highlight-hand"
+                         data-hand-name="${handName}"
+                         data-hand-tiles='${JSON.stringify(relevantTiles)}'>
+                      <div class="target-hand-name">${idx === 0 ? icons.star(14) + ' ' : ''}${handName}</div>
+                      ${h.category ? `<div class="target-hand-category">${h.category}</div>` : ''}
+                      ${h.fit_description ? `<div class="target-hand-fit">${h.fit_description}</div>` : ''}
+                      ${h.tiles_needed ? `<div class="target-hand-needs">Still need: ${h.tiles_needed}</div>` : ''}
+                      <div class="target-hand-hint">
+                        ${isActive ? icons.target(12) + ' Highlighting matching tiles above' : 'Tap to see matching tiles'}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
               </div>
             ` : ''}
 
