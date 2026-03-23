@@ -1,0 +1,4 @@
+node_modules/
+.env
+test-images/
+.DS_Store

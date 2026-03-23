@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Mahjong Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+  <style>
+    :root {
+      --pink: #e8a0bf;
+      --pink-light: #f5d5e5;
+      --pink-dark: #c77da3;
+      --coral: #f4845f;
+      --peach: #fcd5ce;
+      --mint: #b8e0d2;
+      --mint-dark: #7bc4b3;
+      --lavender: #c3b1e1;
+      --lavender-light: #e8dff5;
+      --cream: #fef9ef;
+      --warm-white: #fffdf7;
+      --text: #4a3f55;
+      --text-light: #7a6f85;
+      --shadow: rgba(200, 170, 190, 0.25);
+      --shadow-strong: rgba(200, 170, 190, 0.4);
+      --red-tile: #e05555;
+      --green-tile: #4caf7a;
+      --blue-tile: #5b8cd4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(160deg, var(--cream) 0%, var(--peach) 50%, var(--pink-light) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px 32px;
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 24px 0 16px;
+    }
+
+    .header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--pink-dark);
+      letter-spacing: -0.5px;
+    }
+
+    .header h1 span { font-size: 32px; }
+
+    .header p {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    /* Navigation tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 16px;
+      padding: 4px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-tab {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 10px 8px;
+      border-radius: 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .nav-tab.active {
+      background: white;
+      color: var(--pink-dark);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .nav-tab .tab-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 20px var(--shadow);
+      border: 1px solid rgba(255,255,255,0.8);
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--pink-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .icon { font-size: 20px; }
+
+    /* Photo upload zone */
+    .upload-zone {
+      border: 2px dashed var(--pink-light);
+      border-radius: 16px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: var(--warm-white);
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--pink);
+      background: var(--pink-light);
+      transform: scale(1.01);
+    }
+
+    .upload-zone .upload-icon { font-size: 48px; margin-bottom: 8px; }
+
+    .upload-zone p {
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .upload-zone .hint {
+      font-size: 12px;
+      color: var(--text-light);
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    /* Image preview */
+    .preview-container {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .preview-container img {
+      width: 100%;
+      display: block;
+      border-radius: 16px;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .preview-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(4px);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: transform 0.15s;
+    }
+
+    .preview-btn:active { transform: scale(0.9); }
+
+    /* Tile display */
+    .tiles-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      justify-content: center;
+      margin: 12px 0;
+    }
+
+    .tile {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 42px;
+      padding: 0 6px;
+      background: linear-gradient(180deg, #fff 0%, #f0ebe3 100%);
+      border: 1.5px solid #d4cfc6;
+      border-radius: 6px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+      position: relative;
+      cursor: default;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .tile.suit-bam { color: #2e7d32; }
+    .tile.suit-crak { color: #c62828; }
+    .tile.suit-dot { color: #1565c0; }
+    .tile.suit-wind { color: var(--text); }
+    .tile.suit-dragon.red { color: #c62828; }
+    .tile.suit-dragon.green { color: #2e7d32; }
+    .tile.suit-dragon.white { color: #888; border-style: dashed; }
+    .tile.suit-flower { color: #e65100; background: linear-gradient(180deg, #fff8e1 0%, #f0ebe3 100%); }
+    .tile.suit-joker { color: #7b1fa2; background: linear-gradient(180deg, #f3e5f5 0%, #f0ebe3 100%); }
+
+    .tile.pass-tile {
+      opacity: 0.5;
+      border-color: var(--coral);
+      text-decoration: line-through;
+    }
+
+    .tile.keep-tile {
+      border-color: var(--mint-dark);
+      box-shadow: 0 0 0 2px rgba(123, 196, 179, 0.3), 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink) 0%, var(--coral) 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(232, 160, 191, 0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(232, 160, 191, 0.6);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--warm-white);
+      color: var(--pink-dark);
+      border: 2px solid var(--pink-light);
+    }
+
+    .btn-secondary:hover {
+      background: var(--pink-light);
+    }
+
+    .btn-small {
+      width: auto;
+      padding: 8px 16px;
+      font-size: 13px;
+      border-radius: 10px;
+    }
+
+    /* Charleston rounds */
+    .charleston-rounds {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .round-chip {
+      flex: 1;
+      padding: 8px 4px;
+      border-radius: 10px;
+      border: 2px solid var(--pink-light);
+      background: white;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .round-chip.active {
+      border-color: var(--pink);
+      background: var(--pink-light);
+      color: var(--pink-dark);
+    }
+
+    .round-chip.completed {
+      border-color: var(--mint-dark);
+      background: var(--mint);
+      color: #3a7d6a;
+    }
+
+    .round-chip .dir { font-size: 14px; display: block; }
+
+    /* Advice section */
+    .advice-section {
+      margin-top: 16px;
+    }
+
+    .advice-header {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .advice-pass {
+      background: #fff5f5;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border-left: 4px solid var(--coral);
+    }
+
+    .advice-keep {
+      background: #f0faf5;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      border-left: 4px solid var(--mint-dark);
+    }
+
+    .advice-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .advice-pass .advice-label { color: var(--coral); }
+    .advice-keep .advice-label { color: var(--mint-dark); }
+
+    .strategy-text {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    /* Tips */
+    .tip-card {
+      background: var(--lavender-light);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .tip-card .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.4;
+      color: var(--text);
+    }
+
+    /* Hand matches */
+    .hand-match {
+      background: white;
+      border: 1.5px solid var(--pink-light);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+    }
+
+    .hand-match:first-child {
+      border-color: var(--pink);
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+
+    .hand-match-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .hand-match-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .hand-match-score {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--pink-light);
+      color: var(--pink-dark);
+    }
+
+    .hand-match-category {
+      font-size: 11px;
+      color: var(--text-light);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .hand-match-needs {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .hand-match-needs strong { color: var(--pink-dark); }
+
+    .difficulty {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .difficulty.easy { background: #e8f5e9; color: #2e7d32; }
+    .difficulty.medium { background: #fff3e0; color: #e65100; }
+    .difficulty.hard { background: #fce4ec; color: #c62828; }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 32px 20px;
+    }
+
+    .loading-tiles {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .loading-tile {
+      width: 24px;
+      height: 32px;
+      background: linear-gradient(180deg, #fff 0%, #f0ebe3 100%);
+      border: 1.5px solid #d4cfc6;
+      border-radius: 4px;
+      animation: tileFloat 1.2s ease-in-out infinite;
+    }
+
+    .loading-tile:nth-child(2) { animation-delay: 0.15s; }
+    .loading-tile:nth-child(3) { animation-delay: 0.3s; }
+    .loading-tile:nth-child(4) { animation-delay: 0.45s; }
+    .loading-tile:nth-child(5) { animation-delay: 0.6s; }
+
+    @keyframes tileFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .loading p {
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* Section visibility */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Edit tiles modal */
+    .edit-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .edit-sheet {
+      background: white;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px 40px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .edit-sheet h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      text-align: center;
+      color: var(--pink-dark);
+    }
+
+    .edit-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid var(--pink-light);
+      border-radius: 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 8px;
+    }
+
+    .edit-input:focus { border-color: var(--pink); }
+
+    .edit-help {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .edit-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .edit-actions .btn { flex: 1; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--text);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 200;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Responsive */
+    @media (max-width: 360px) {
+      .tile { min-width: 28px; height: 38px; font-size: 11px; }
+      .nav-tab { font-size: 11px; padding: 8px 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app"></div>
+
+  <script>
+    // ─── State ───
+    const state = {
+      tab: 'charleston',
+      // Tiles
+      handImage: null,
+      handPreview: null,
+      handRotation: 0,
+      tiles: null,
+      tilesLoading: false,
+      // Charleston
+      charlestonRound: 0,
+      charlestonAdvice: null,
+      charlestonLoading: false,
+      charlestonHistory: [],
+      // Hand matching
+      matchResults: null,
+      matchLoading: false,
+      // Edit modal
+      editOpen: false,
+      // Toast
+      toastMsg: '',
+      toastTimer: null,
+      // Error
+      error: null
+    };
+
+    const CHARLESTON_ROUNDS = [
+      { name: 'Right', dir: '→', label: '1st Right' },
+      { name: 'Across', dir: '↔', label: '1st Across' },
+      { name: 'Left', dir: '←', label: '1st Left' },
+      { name: 'Left', dir: '←', label: '2nd Left' },
+      { name: 'Across', dir: '↔', label: '2nd Across' },
+      { name: 'Right', dir: '→', label: '2nd Right' }
+    ];
+
+    function setState(updates) {
+      Object.assign(state, updates);
+      render();
+    }
+
+    function toast(msg) {
+      clearTimeout(state.toastTimer);
+      state.toastMsg = msg;
+      render();
+      setTimeout(() => {
+        const el = document.querySelector('.toast');
+        if (el) el.classList.add('show');
+      }, 10);
+      state.toastTimer = setTimeout(() => {
+        setState({ toastMsg: '' });
+      }, 3000);
+    }
+
+    // ─── Tile helpers ───
+    function tileClass(code) {
+      if (code === 'J') return 'tile suit-joker';
+      if (code === 'F') return 'tile suit-flower';
+      if (code.endsWith('B')) return 'tile suit-bam';
+      if (code.endsWith('C')) return 'tile suit-crak';
+      if (code.endsWith('D')) return 'tile suit-dot';
+      if (['N','E','S','W'].includes(code)) return 'tile suit-wind';
+      if (code === 'RD') return 'tile suit-dragon red';
+      if (code === 'GD') return 'tile suit-dragon green';
+      if (code === 'WD') return 'tile suit-dragon white';
+      return 'tile';
+    }
+
+    function tileName(code) {
+      if (code === 'J') return 'Joker';
+      if (code === 'F') return 'Flower';
+      if (code === 'N') return 'North';
+      if (code === 'E') return 'East';
+      if (code === 'S') return 'South';
+      if (code === 'W') return 'West';
+      if (code === 'RD') return 'Red';
+      if (code === 'GD') return 'Green';
+      if (code === 'WD') return 'Soap';
+      const num = code.slice(0, -1);
+      const suit = { B: 'Bam', C: 'Crak', D: 'Dot' }[code.slice(-1)] || '';
+      return `${num} ${suit}`;
+    }
+
+    function renderTile(code, extraClass = '') {
+      return `<span class="${tileClass(code)} ${extraClass}" title="${tileName(code)}">${tileName(code)}</span>`;
+    }
+
+    // ─── Image handling ───
+    async function handleImage(file) {
+      if (!file) return;
+      setState({ error: null });
+
+      try {
+        let blob = file;
+        // HEIC conversion for iPhone photos
+        if (file.type === 'image/heic' || file.type === 'image/heif' ||
+            file.name?.toLowerCase().endsWith('.heic') || file.name?.toLowerCase().endsWith('.heif')) {
+          try {
+            blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+          } catch (e) {
+            console.warn('HEIC conversion failed, trying as-is:', e);
+          }
+        }
+
+        const dataUrl = await readAsDataURL(blob);
+        // Test if the image can render
+        const canRender = await testImage(dataUrl);
+        if (!canRender && typeof heic2any !== 'undefined') {
+          blob = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+          const retryUrl = await readAsDataURL(blob);
+          setState({ handPreview: retryUrl, handImage: retryUrl });
+        } else {
+          setState({ handPreview: dataUrl, handImage: dataUrl });
+        }
+      } catch (err) {
+        setState({ error: 'Could not load image. Try a JPEG or PNG photo.' });
+      }
+    }
+
+    function readAsDataURL(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    function testImage(src) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = src;
+      });
+    }
+
+    function getProcessedImage() {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 1400;
+          let w = img.width, h = img.height;
+          const rot = state.handRotation;
+          const swap = rot === 90 || rot === 270;
+
+          if (swap) {
+            if (h > maxSize) { w *= maxSize / h; h = maxSize; }
+            if (w > maxSize) { h *= maxSize / w; w = maxSize; }
+            canvas.width = h; canvas.height = w;
+          } else {
+            if (w > maxSize) { h *= maxSize / w; w = maxSize; }
+            if (h > maxSize) { w *= maxSize / h; h = maxSize; }
+            canvas.width = w; canvas.height = h;
+          }
+
+          const ctx = canvas.getContext('2d');
+          ctx.translate(canvas.width / 2, canvas.height / 2);
+          ctx.rotate((rot * Math.PI) / 180);
+          ctx.drawImage(img, -w / 2, -h / 2, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.88));
+        };
+        img.src = state.handImage;
+      });
+    }
+
+    // ─── API calls ───
+    async function recognizeTiles() {
+      setState({ tilesLoading: true, error: null });
+      try {
+        const image = await getProcessedImage();
+        const res = await fetch('/api/read-tiles', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        setState({ tiles: data.tiles, tilesLoading: false });
+        toast('Tiles recognized!');
+      } catch (err) {
+        setState({ tilesLoading: false, error: err.message });
+      }
+    }
+
+    async function getCharlestonAdvice() {
+      if (!state.tiles) return;
+      setState({ charlestonLoading: true, error: null });
+      try {
+        const round = CHARLESTON_ROUNDS[state.charlestonRound];
+        const res = await fetch('/api/charleston-advice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tiles: state.tiles,
+            round: round.label
+          })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        setState({ charlestonAdvice: data, charlestonLoading: false });
+      } catch (err) {
+        setState({ charlestonLoading: false, error: err.message });
+      }
+    }
+
+    async function getHandMatches() {
+      if (!state.tiles) return;
+      setState({ matchLoading: true, error: null });
+      try {
+        const res = await fetch('/api/match-hands', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tiles: state.tiles })
+        });
+        const data = await res.json();
+        if (data.error) throw new Error(data.error);
+        setState({ matchResults: data, matchLoading: false });
+      } catch (err) {
+        setState({ matchLoading: false, error: err.message });
+      }
+    }
+
+    // ─── Event handlers ───
+    function setupEvents() {
+      const app = document.getElementById('app');
+
+      app.addEventListener('click', e => {
+        const t = e.target.closest('[data-action]');
+        if (!t) return;
+        const action = t.dataset.action;
+
+        switch (action) {
+          case 'tab':
+            setState({ tab: t.dataset.tab });
+            break;
+
+          case 'upload':
+            document.getElementById('fileInput').click();
+            break;
+
+          case 'rotate':
+            setState({ handRotation: (state.handRotation + 90) % 360 });
+            break;
+
+          case 'clear-image':
+            setState({
+              handImage: null, handPreview: null, handRotation: 0,
+              tiles: null, charlestonAdvice: null, matchResults: null
+            });
+            break;
+
+          case 'recognize':
+            recognizeTiles();
+            break;
+
+          case 'edit-tiles':
+            setState({ editOpen: true });
+            setTimeout(() => {
+              const input = document.getElementById('editTilesInput');
+              if (input) { input.value = (state.tiles || []).join(', '); input.focus(); }
+            }, 50);
+            break;
+
+          case 'save-tiles':
+            const input = document.getElementById('editTilesInput');
+            if (input) {
+              const parsed = input.value.split(/[,\s]+/).map(s => s.trim().toUpperCase()).filter(Boolean);
+              setState({ tiles: parsed, editOpen: false, charlestonAdvice: null, matchResults: null });
+              toast('Tiles updated!');
+            }
+            break;
+
+          case 'cancel-edit':
+            setState({ editOpen: false });
+            break;
+
+          case 'charleston-advise':
+            getCharlestonAdvice();
+            break;
+
+          case 'charleston-round':
+            setState({
+              charlestonRound: parseInt(t.dataset.round),
+              charlestonAdvice: null
+            });
+            break;
+
+          case 'match-hands':
+            getHandMatches();
+            break;
+
+          case 'new-hand':
+            setState({
+              handImage: null, handPreview: null, handRotation: 0,
+              tiles: null, charlestonAdvice: null, matchResults: null,
+              charlestonRound: 0, charlestonHistory: [], error: null
+            });
+            break;
+        }
+      });
+
+      app.addEventListener('change', e => {
+        if (e.target.id === 'fileInput') {
+          handleImage(e.target.files[0]);
+        }
+      });
+
+      // Drag and drop
+      app.addEventListener('dragover', e => {
+        e.preventDefault();
+        const zone = e.target.closest('.upload-zone');
+        if (zone) zone.classList.add('dragover');
+      });
+
+      app.addEventListener('dragleave', e => {
+        const zone = e.target.closest('.upload-zone');
+        if (zone) zone.classList.remove('dragover');
+      });
+
+      app.addEventListener('drop', e => {
+        e.preventDefault();
+        const zone = e.target.closest('.upload-zone');
+        if (zone) {
+          zone.classList.remove('dragover');
+          if (e.dataTransfer.files.length) handleImage(e.dataTransfer.files[0]);
+        }
+      });
+    }
+
+    // ─── Render ───
+    function render() {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="header">
+          <h1><span>🀄</span> Mahjong Companion</h1>
+          <p>Your friendly helper for American Mahjong</p>
+        </div>
+
+        <div class="nav-tabs">
+          <button class="nav-tab ${state.tab === 'charleston' ? 'active' : ''}" data-action="tab" data-tab="charleston">
+            <span class="tab-icon">🔄</span>Charleston
+          </button>
+          <button class="nav-tab ${state.tab === 'hands' ? 'active' : ''}" data-action="tab" data-tab="hands">
+            <span class="tab-icon">🎯</span>Hand Match
+          </button>
+          <button class="nav-tab ${state.tab === 'tips' ? 'active' : ''}" data-action="tab" data-tab="tips">
+            <span class="tab-icon">💡</span>Tips
+          </button>
+        </div>
+
+        ${state.error ? `<div class="card" style="border-left: 4px solid var(--coral); background: #fff5f5;">
+          <p style="font-size: 14px; color: var(--coral);">${state.error}</p>
+        </div>` : ''}
+
+        ${renderTileInput()}
+
+        <div class="section ${state.tab === 'charleston' ? 'active' : ''}">
+          ${renderCharleston()}
+        </div>
+
+        <div class="section ${state.tab === 'hands' ? 'active' : ''}">
+          ${renderHandMatch()}
+        </div>
+
+        <div class="section ${state.tab === 'tips' ? 'active' : ''}">
+          ${renderTips()}
+        </div>
+
+        ${state.editOpen ? renderEditModal() : ''}
+        ${state.toastMsg ? `<div class="toast">${state.toastMsg}</div>` : ''}
+
+        <input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none">
+      `;
+    }
+
+    function renderTileInput() {
+      if (state.tilesLoading) {
+        return `
+          <div class="card">
+            <div class="loading">
+              <div class="loading-tiles">
+                <div class="loading-tile"></div>
+                <div class="loading-tile"></div>
+                <div class="loading-tile"></div>
+                <div class="loading-tile"></div>
+                <div class="loading-tile"></div>
+              </div>
+              <p>Reading your tiles...</p>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.tiles) {
+        return `
+          <div class="card">
+            <div class="card-title"><span class="icon">🎴</span> Your Hand</div>
+            <div class="tiles-row">
+              ${state.tiles.map(t => renderTile(t)).join('')}
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <button class="btn btn-secondary btn-small" data-action="edit-tiles" style="flex:1">Edit Tiles</button>
+              <button class="btn btn-secondary btn-small" data-action="upload" style="flex:1">New Photo</button>
+              <button class="btn btn-secondary btn-small" data-action="new-hand" style="flex:0">✕</button>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.handPreview) {
+        return `
+          <div class="card">
+            <div class="card-title"><span class="icon">📸</span> Your Tiles</div>
+            <div class="preview-container">
+              <img src="${state.handPreview}" alt="Hand photo" style="transform: rotate(${state.handRotation}deg)">
+              <div class="preview-overlay">
+                <button class="preview-btn" data-action="rotate" title="Rotate">↻</button>
+                <button class="preview-btn" data-action="clear-image" title="Remove">✕</button>
+              </div>
+            </div>
+            <button class="btn btn-primary" data-action="recognize">
+              🔍 Read My Tiles
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="card">
+          <div class="card-title"><span class="icon">📸</span> Snap Your Tiles</div>
+          <div class="upload-zone" data-action="upload">
+            <div class="upload-icon">🀄</div>
+            <p>Tap to take a photo of your tiles</p>
+            <p class="hint">or drag & drop an image here</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCharleston() {
+      if (!state.tiles) {
+        return `
+          <div class="card">
+            <div class="card-title"><span class="icon">🔄</span> Charleston Helper</div>
+            <p style="font-size: 14px; color: var(--text-light); text-align: center; padding: 20px 0;">
+              Take a photo of your tiles to get Charleston advice
+            </p>
+          </div>
+        `;
+      }
+
+      const roundsHtml = CHARLESTON_ROUNDS.map((r, i) => `
+        <button class="round-chip ${i === state.charlestonRound ? 'active' : ''} ${state.charlestonHistory.includes(i) ? 'completed' : ''}"
+                data-action="charleston-round" data-round="${i}">
+          <span class="dir">${r.dir}</span>
+          ${r.label}
+        </button>
+      `).join('');
+
+      let adviceHtml = '';
+
+      if (state.charlestonLoading) {
+        adviceHtml = `
+          <div class="loading">
+            <div class="loading-tiles">
+              <div class="loading-tile"></div>
+              <div class="loading-tile"></div>
+              <div class="loading-tile"></div>
+            </div>
+            <p>Thinking about your best passes...</p>
+          </div>
+        `;
+      } else if (state.charlestonAdvice) {
+        const a = state.charlestonAdvice;
+        const passTiles = a.pass || [];
+        const keepTiles = (state.tiles || []).filter(t => !passTiles.includes(t));
+
+        adviceHtml = `
+          <div class="advice-section">
+            <div class="advice-pass">
+              <div class="advice-label">Pass these 3 tiles ${CHARLESTON_ROUNDS[state.charlestonRound].dir}</div>
+              <div class="tiles-row" style="justify-content: flex-start;">
+                ${passTiles.map(t => renderTile(t, 'pass-tile')).join('')}
+              </div>
+            </div>
+
+            <div class="advice-keep">
+              <div class="advice-label">Keep building with</div>
+              <div class="tiles-row" style="justify-content: flex-start; flex-wrap: wrap;">
+                ${keepTiles.map(t => renderTile(t, 'keep-tile')).join('')}
+              </div>
+              <p class="strategy-text" style="margin-top: 10px;">
+                ${a.keep_strategy || ''}
+              </p>
+            </div>
+
+            ${a.target_hands ? `
+              <div style="margin-bottom: 12px;">
+                <div class="advice-header">🎯 Target Hands</div>
+                ${a.target_hands.map(h => `
+                  <div style="font-size: 13px; color: var(--text); padding: 2px 0;">• ${h}</div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            ${(a.tips || []).map(tip => `
+              <div class="tip-card">
+                <span class="tip-icon">💡</span>
+                <p>${tip}</p>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      return `
+        <div class="card">
+          <div class="card-title"><span class="icon">🔄</span> Charleston Helper</div>
+          <div class="charleston-rounds">${roundsHtml}</div>
+
+          ${adviceHtml || `
+            <button class="btn btn-primary" data-action="charleston-advise" ${!state.tiles ? 'disabled' : ''}>
+              🤔 What Should I Pass?
+            </button>
+          `}
+
+          ${state.charlestonAdvice ? `
+            <button class="btn btn-secondary" data-action="charleston-advise" style="margin-top: 8px;">
+              🔄 Re-analyze
+            </button>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function renderHandMatch() {
+      if (!state.tiles) {
+        return `
+          <div class="card">
+            <div class="card-title"><span class="icon">🎯</span> Hand Matcher</div>
+            <p style="font-size: 14px; color: var(--text-light); text-align: center; padding: 20px 0;">
+              Take a photo of your tiles to find matching hands
+            </p>
+          </div>
+        `;
+      }
+
+      if (state.matchLoading) {
+        return `
+          <div class="card">
+            <div class="card-title"><span class="icon">🎯</span> Hand Matcher</div>
+            <div class="loading">
+              <div class="loading-tiles">
+                <div class="loading-tile"></div>
+                <div class="loading-tile"></div>
+                <div class="loading-tile"></div>
+                <div class="loading-tile"></div>
+              </div>
+              <p>Finding your best hands...</p>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.matchResults) {
+        const r = state.matchResults;
+        return `
+          <div class="card">
+            <div class="card-title"><span class="icon">🎯</span> Hand Matcher</div>
+
+            ${r.recommendation ? `
+              <div class="advice-keep" style="margin-bottom: 16px;">
+                <p class="strategy-text">${r.recommendation}</p>
+              </div>
+            ` : ''}
+
+            ${(r.matches || []).map((m, i) => `
+              <div class="hand-match">
+                <div class="hand-match-header">
+                  <span class="hand-match-name">${i === 0 ? '⭐ ' : ''}${m.hand_name}</span>
+                  <span class="hand-match-score">${m.tiles_have}/${m.tiles_have + m.tiles_need}</span>
+                </div>
+                <div class="hand-match-category">${m.category || ''} ${m.difficulty ? `<span class="difficulty ${m.difficulty}">${m.difficulty}</span>` : ''}</div>
+                <div class="hand-match-needs">
+                  <strong>Need:</strong> ${(m.needed || []).join(', ') || 'Unknown'}
+                </div>
+                ${m.notes ? `<p style="font-size: 12px; color: var(--text-light); margin-top: 6px;">${m.notes}</p>` : ''}
+              </div>
+            `).join('')}
+
+            ${r.discard_suggestion ? `
+              <div class="advice-pass" style="margin-top: 8px;">
+                <div class="advice-label">Suggested discard</div>
+                <div class="tiles-row" style="justify-content: flex-start;">
+                  ${renderTile(r.discard_suggestion.tile, 'pass-tile')}
+                </div>
+                <p style="font-size: 13px; margin-top: 6px;">${r.discard_suggestion.reason || ''}</p>
+              </div>
+            ` : ''}
+
+            <button class="btn btn-secondary" data-action="match-hands" style="margin-top: 8px;">
+              🔄 Re-analyze
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="card">
+          <div class="card-title"><span class="icon">🎯</span> Hand Matcher</div>
+          <button class="btn btn-primary" data-action="match-hands">
+            🔍 Find Matching Hands
+          </button>
+        </div>
+      `;
+    }
+
+    function renderTips() {
+      return `
+        <div class="card">
+          <div class="card-title"><span class="icon">🔄</span> Charleston Tips</div>
+          <div class="tip-card">
+            <span class="tip-icon">🌸</span>
+            <p><strong>Never pass Flowers</strong> unless you're 100% sure your target hand doesn't use them. Flowers are rare (only 8 in the set) and appear in most winning hands.</p>
+          </div>
+          <div class="tip-card">
+            <span class="tip-icon">🃏</span>
+            <p><strong>Jokers can't be passed</strong> during the Charleston. They stay in your hand — and they're wildcards that can substitute for any tile in an exposed group.</p>
+          </div>
+          <div class="tip-card">
+            <span class="tip-icon">👯</span>
+            <p><strong>Keep pairs and triples.</strong> If you have two or three of the same tile, hold onto them! Pairs are hard to rebuild and form the backbone of most hands.</p>
+          </div>
+          <div class="tip-card">
+            <span class="tip-icon">🙈</span>
+            <p><strong>Don't pass matching suits together.</strong> Passing 3-Bam and 5-Bam in the same round could hand someone exactly what they need for a consecutive run.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="icon">🎮</span> During Play</div>
+          <div class="tip-card">
+            <span class="tip-icon">🎯</span>
+            <p><strong>Stay flexible early.</strong> Don't commit to one hand too early — keep tiles that work across multiple hands until the picture becomes clearer.</p>
+          </div>
+          <div class="tip-card">
+            <span class="tip-icon">👀</span>
+            <p><strong>Watch the discards.</strong> If tiles you need are being discarded by others, it might be time to switch to a different hand.</p>
+          </div>
+          <div class="tip-card">
+            <span class="tip-icon">🛡️</span>
+            <p><strong>Play defense.</strong> If another player has many exposures (called tiles), be careful about discarding tiles they might need. When in doubt, discard what's already been discarded.</p>
+          </div>
+          <div class="tip-card">
+            <span class="tip-icon">🔄</span>
+            <p><strong>Know when to switch.</strong> If you're more than 5 tiles away from your target hand by mid-game, consider pivoting to something closer.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span class="icon">📖</span> Reading the Card</div>
+          <div class="tip-card">
+            <span class="tip-icon">🔢</span>
+            <p><strong>Numbers in the hand</strong> represent specific tile values. "2024" means tiles 2, 0, 2, 4 (where 0 is represented by a specific tile for that year).</p>
+          </div>
+          <div class="tip-card">
+            <span class="tip-icon">🎨</span>
+            <p><strong>Colors matter!</strong> Tiles shown in the same color on the card must be the same suit. Different colors = different suits. You pick which suit, but stay consistent.</p>
+          </div>
+          <div class="tip-card">
+            <span class="tip-icon">✋</span>
+            <p><strong>C = Concealed, X = Exposed.</strong> Some hands (or parts of hands) must be concealed (no calling tiles). Hands marked with a "C" must be won entirely from the wall or by self-draw. "X" means you can call discards.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderEditModal() {
+      return `
+        <div class="edit-overlay" data-action="cancel-edit">
+          <div class="edit-sheet" onclick="event.stopPropagation()">
+            <h3>Edit Your Tiles</h3>
+            <input class="edit-input" id="editTilesInput" type="text"
+                   placeholder="e.g. 1B, 2C, 5D, F, J, N, RD">
+            <p class="edit-help">
+              <strong>Suits:</strong> 1B-9B (Bam), 1C-9C (Crak), 1D-9D (Dot)<br>
+              <strong>Winds:</strong> N, E, S, W<br>
+              <strong>Dragons:</strong> RD (Red), GD (Green), WD (Soap)<br>
+              <strong>Special:</strong> F (Flower), J (Joker)
+            </p>
+            <div class="edit-actions">
+              <button class="btn btn-secondary" data-action="cancel-edit">Cancel</button>
+              <button class="btn btn-primary" data-action="save-tiles">Save</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ─── Init ───
+    setupEvents();
+    render();
+  </script>
+</body>
+</html>
