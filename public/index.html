@@ -1189,10 +1189,11 @@
           setState({ aiBackground: data.image, quizStep: 6 });
           applyTheme();
         } else {
-          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed. Try again!' });
+          const debug = data.debug ? JSON.stringify(data.debug) : (data.error || 'Unknown error');
+          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + debug });
         }
       } catch (err) {
-        setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed. Try again!' });
+        setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + err.message });
       }
     }
 
