@@ -49,11 +49,6 @@
       pointer-events: none;
     }
 
-    .theme-bg svg {
-      width: 100%;
-      height: 100%;
-    }
-
     .theme-bg.ai-bg {
       background-size: cover;
       background-position: center;
@@ -825,9 +820,9 @@
     }
 
     .theme-sheet {
-      background: var(--card-bg, white);
+      background: white;
       border-radius: 24px 24px 0 0;
-      padding: 20px 16px 40px;
+      padding: 24px 20px 40px;
       width: 100%;
       max-width: 480px;
       max-height: 80vh;
@@ -848,119 +843,136 @@
       font-weight: 600;
       text-align: center;
       color: var(--pink-dark);
-      margin-bottom: 4px;
-    }
-
-    .theme-sheet .subtitle {
-      font-size: 12px;
-      color: var(--text-light);
-      text-align: center;
       margin-bottom: 16px;
     }
 
-    .theme-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .theme-swatch {
-      border-radius: 14px;
-      padding: 12px;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .theme-swatch:hover {
-      transform: scale(1.02);
-    }
-
-    .theme-swatch.active {
-      border-color: var(--pink-dark);
-      box-shadow: 0 2px 12px var(--shadow);
-    }
-
-    .theme-swatch-preview {
-      height: 48px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .theme-swatch-name {
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      text-align: center;
-    }
-
-    .theme-swatch .check-mark {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--pink-dark);
-      color: white;
+    /* Quiz bottom sheet */
+    .quiz-sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px);
+      z-index: 160;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
+      animation: fadeIn 0.2s ease;
     }
 
-    /* AI background section */
-    .ai-bg-section {
-      border-top: 1px solid var(--pink-light);
-      padding-top: 14px;
-      margin-top: 8px;
+    .quiz-sheet {
+      background: white;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px 40px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      animation: slideUp 0.3s ease;
     }
 
-    .ai-bg-section .ai-label {
+    .quiz-progress {
+      height: 4px;
+      background: #f0e6ea;
+      border-radius: 2px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .quiz-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--pink), var(--coral));
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .quiz-question {
       font-family: 'Outfit', sans-serif;
-      font-size: 14px;
+      font-size: 20px;
       font-weight: 600;
       color: var(--text);
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
-    .ai-bg-btn {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 2px dashed var(--pink-light);
-      background: var(--warm-white);
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .quiz-option {
+      padding: 16px 12px;
+      border-radius: 16px;
+      border: 2px solid #f0e6ea;
+      background: white;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      touch-action: manipulation;
+    }
+
+    .quiz-option:active {
+      transform: scale(0.95);
+    }
+
+    .quiz-option:hover {
+      border-color: var(--pink);
+      background: #fff5f8;
+    }
+
+    .quiz-option .quiz-emoji {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .quiz-option .quiz-label {
       font-family: 'Quicksand', sans-serif;
       font-size: 13px;
       font-weight: 600;
-      color: var(--text-light);
+      color: var(--text);
+    }
+
+    /* Color swatches for Q4 */
+    .quiz-color-options {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .quiz-color-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
       cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .quiz-color-swatch {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 3px solid transparent;
       transition: all 0.2s;
     }
 
-    .ai-bg-btn:hover {
-      border-color: var(--pink);
-      background: var(--pink-light);
+    .quiz-color-option:active .quiz-color-swatch {
+      transform: scale(0.9);
     }
 
-    .ai-bg-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .quiz-color-option:hover .quiz-color-swatch {
+      border-color: var(--text);
+      transform: scale(1.1);
     }
 
-    .ai-bg-loading {
-      text-align: center;
-      padding: 12px;
-      font-size: 13px;
+    .quiz-color-label {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
       color: var(--text-light);
     }
 
@@ -976,589 +988,17 @@
   <div class="app" id="app"></div>
 
   <script>
-    // ─── Themes ───
-    const THEMES = [
-      {
-        id: 'cherry-blossom',
-        name: 'Cherry Blossom',
-        colors: {
-          bg1: '#fef0f5', bg2: '#f5e6ea',
-          primary: '#d4829c', primaryLight: '#f5d5e5',
-          accent: '#8fb596',
-          card: 'rgba(255,255,255,0.92)', cardBorder: 'rgba(255,255,255,0.8)',
-          text: '#5a3d4a', textLight: '#8a6d7a',
-          tileGradient1: '#fff', tileGradient2: '#f5ede8', tileBorder: '#ddd4ce',
-          shadow: 'rgba(200,170,190,0.25)', coral: '#f4845f',
-          mint: '#b8e0d2', mintDark: '#7bc4b3', lavender: '#c3b1e1', lavenderLight: '#e8dff5',
-        },
-        imagenPrompt: 'Delicate watercolor cherry blossoms on silk, dusty rose and sage green, chinoiserie pattern, elegant mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .cb-petal { animation: cbFloat 18s ease-in-out infinite; }
-                .cb-p2 { animation-delay: -4s; }
-                .cb-p3 { animation-delay: -8s; }
-                .cb-p4 { animation-delay: -12s; }
-                .cb-p5 { animation-delay: -2s; }
-                .cb-p6 { animation-delay: -15s; }
-                @keyframes cbFloat {
-                  0%,100% { transform: translate(0,0) rotate(0deg); opacity: 0.12; }
-                  25% { transform: translate(25px,60px) rotate(45deg); opacity: 0.18; }
-                  50% { transform: translate(-15px,120px) rotate(90deg); opacity: 0.12; }
-                  75% { transform: translate(35px,180px) rotate(135deg); opacity: 0.15; }
-                }
-              </style>
-              <pattern id="cbLattice" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M20 0L40 20L20 40L0 20Z" fill="none" stroke="#d4829c" stroke-width="0.5" opacity="0.08"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#cbLattice)"/>
-            <g class="cb-petal" transform="translate(80,60)">
-              <circle cx="0" cy="-8" r="5" fill="#d4829c" opacity="0.15"/><circle cx="7.6" cy="-2.5" r="5" fill="#d4829c" opacity="0.15"/>
-              <circle cx="4.7" cy="6.5" r="5" fill="#d4829c" opacity="0.15"/><circle cx="-4.7" cy="6.5" r="5" fill="#d4829c" opacity="0.15"/>
-              <circle cx="-7.6" cy="-2.5" r="5" fill="#d4829c" opacity="0.15"/><circle cx="0" cy="0" r="3" fill="white" opacity="0.3"/>
-            </g>
-            <g class="cb-petal cb-p2" transform="translate(250,150) scale(1.3)">
-              <circle cx="0" cy="-8" r="5" fill="#e8a0bf" opacity="0.12"/><circle cx="7.6" cy="-2.5" r="5" fill="#e8a0bf" opacity="0.12"/>
-              <circle cx="4.7" cy="6.5" r="5" fill="#e8a0bf" opacity="0.12"/><circle cx="-4.7" cy="6.5" r="5" fill="#e8a0bf" opacity="0.12"/>
-              <circle cx="-7.6" cy="-2.5" r="5" fill="#e8a0bf" opacity="0.12"/><circle cx="0" cy="0" r="3" fill="white" opacity="0.2"/>
-            </g>
-            <g class="cb-petal cb-p3" transform="translate(160,350) scale(0.9)">
-              <circle cx="0" cy="-8" r="5" fill="#d4829c" opacity="0.13"/><circle cx="7.6" cy="-2.5" r="5" fill="#d4829c" opacity="0.13"/>
-              <circle cx="4.7" cy="6.5" r="5" fill="#d4829c" opacity="0.13"/><circle cx="-4.7" cy="6.5" r="5" fill="#d4829c" opacity="0.13"/>
-              <circle cx="-7.6" cy="-2.5" r="5" fill="#d4829c" opacity="0.13"/><circle cx="0" cy="0" r="3" fill="white" opacity="0.25"/>
-            </g>
-            <g class="cb-petal cb-p4" transform="translate(320,500) scale(1.1)">
-              <circle cx="0" cy="-8" r="5" fill="#e8a0bf" opacity="0.1"/><circle cx="7.6" cy="-2.5" r="5" fill="#e8a0bf" opacity="0.1"/>
-              <circle cx="4.7" cy="6.5" r="5" fill="#e8a0bf" opacity="0.1"/><circle cx="-4.7" cy="6.5" r="5" fill="#e8a0bf" opacity="0.1"/>
-              <circle cx="-7.6" cy="-2.5" r="5" fill="#e8a0bf" opacity="0.1"/><circle cx="0" cy="0" r="3" fill="white" opacity="0.2"/>
-            </g>
-            <g class="cb-petal cb-p5" transform="translate(50,650) scale(0.7)">
-              <circle cx="0" cy="-8" r="5" fill="#d4829c" opacity="0.14"/><circle cx="7.6" cy="-2.5" r="5" fill="#d4829c" opacity="0.14"/>
-              <circle cx="4.7" cy="6.5" r="5" fill="#d4829c" opacity="0.14"/><circle cx="-4.7" cy="6.5" r="5" fill="#d4829c" opacity="0.14"/>
-              <circle cx="-7.6" cy="-2.5" r="5" fill="#d4829c" opacity="0.14"/>
-            </g>
-            <g class="cb-petal cb-p6" transform="translate(280,280) scale(0.6)">
-              <circle cx="0" cy="-8" r="4" fill="#8fb596" opacity="0.1"/><circle cx="7.6" cy="-2.5" r="4" fill="#8fb596" opacity="0.1"/>
-              <circle cx="4.7" cy="6.5" r="4" fill="#8fb596" opacity="0.1"/><circle cx="-4.7" cy="6.5" r="4" fill="#8fb596" opacity="0.1"/>
-              <circle cx="-7.6" cy="-2.5" r="4" fill="#8fb596" opacity="0.1"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'jade-garden',
-        name: 'Jade Garden',
-        colors: {
-          bg1: '#e8f5f0', bg2: '#d4ede4',
-          primary: '#2d7d6e', primaryLight: '#b8e0d2',
-          accent: '#c9a84c',
-          card: 'rgba(255,255,255,0.93)', cardBorder: 'rgba(200,230,220,0.6)',
-          text: '#1a3a32', textLight: '#4a6e62',
-          tileGradient1: '#fff', tileGradient2: '#e8f0eb', tileBorder: '#b8cec4',
-          shadow: 'rgba(45,125,110,0.15)', coral: '#c9a84c',
-          mint: '#b8e0d2', mintDark: '#2d7d6e', lavender: '#a8c9b8', lavenderLight: '#d4ede4',
-        },
-        imagenPrompt: 'Jade green lattice pattern with gold leaf accents, emerald chinoiserie, elegant botanical mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .jg-lattice { animation: jgShift 25s ease-in-out infinite; }
-                @keyframes jgShift {
-                  0%,100% { transform: translate(0,0); }
-                  50% { transform: translate(5px,3px); }
-                }
-              </style>
-              <pattern id="jgDiamond" width="50" height="50" patternUnits="userSpaceOnUse">
-                <path d="M25 0L50 25L25 50L0 25Z" fill="none" stroke="#2d7d6e" stroke-width="0.8" opacity="0.12"/>
-                <path d="M25 10L40 25L25 40L10 25Z" fill="none" stroke="#2d7d6e" stroke-width="0.4" opacity="0.08"/>
-              </pattern>
-            </defs>
-            <g class="jg-lattice">
-              <rect width="100%" height="100%" fill="url(#jgDiamond)"/>
-            </g>
-            <g opacity="0.1">
-              <ellipse cx="100" cy="200" rx="8" ry="14" fill="#2d7d6e" transform="rotate(-20,100,200)"/>
-              <ellipse cx="105" cy="195" rx="6" ry="12" fill="#4a9e8a" transform="rotate(15,105,195)"/>
-              <ellipse cx="300" cy="450" rx="9" ry="15" fill="#2d7d6e" transform="rotate(-30,300,450)"/>
-              <ellipse cx="306" cy="445" rx="7" ry="13" fill="#4a9e8a" transform="rotate(10,306,445)"/>
-              <ellipse cx="50" cy="600" rx="7" ry="12" fill="#2d7d6e" transform="rotate(-15,50,600)"/>
-              <circle cx="200" cy="100" r="3" fill="#c9a84c" opacity="0.6"/>
-              <circle cx="350" cy="300" r="2.5" fill="#c9a84c" opacity="0.5"/>
-              <circle cx="120" cy="500" r="3" fill="#c9a84c" opacity="0.4"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'tropical-paradise',
-        name: 'Tropical Paradise',
-        colors: {
-          bg1: '#e6faf2', bg2: '#dff5ee',
-          primary: '#e87461', primaryLight: '#fcd5ce',
-          accent: '#2ec4b6',
-          card: 'rgba(255,255,255,0.93)', cardBorder: 'rgba(220,245,235,0.7)',
-          text: '#2a4a42', textLight: '#5a7e72',
-          tileGradient1: '#fff', tileGradient2: '#eaf5f0', tileBorder: '#b8d8cc',
-          shadow: 'rgba(46,196,182,0.15)', coral: '#e87461',
-          mint: '#b8e8dc', mintDark: '#2ec4b6', lavender: '#a8d8cc', lavenderLight: '#dff5ee',
-        },
-        imagenPrompt: 'Tropical palm fronds and monstera leaves, coral pink and turquoise, vibrant botanical mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .tp-frond { animation: tpSway 12s ease-in-out infinite; transform-origin: bottom center; }
-                .tp-f2 { animation-delay: -4s; animation-duration: 15s; }
-                .tp-f3 { animation-delay: -8s; animation-duration: 18s; }
-                @keyframes tpSway {
-                  0%,100% { transform: rotate(0deg); }
-                  50% { transform: rotate(3deg); }
-                }
-              </style>
-            </defs>
-            <g class="tp-frond" opacity="0.08">
-              <path d="M-20,800 Q60,600 40,400 Q20,300 60,200 Q80,150 50,50" fill="none" stroke="#2ec4b6" stroke-width="3"/>
-              <path d="M40,400 Q80,380 120,400" fill="none" stroke="#2ec4b6" stroke-width="1.5"/>
-              <path d="M50,350 Q90,320 130,340" fill="none" stroke="#2ec4b6" stroke-width="1.5"/>
-              <path d="M55,300 Q95,270 135,290" fill="none" stroke="#2ec4b6" stroke-width="1.5"/>
-              <path d="M55,250 Q85,230 115,250" fill="none" stroke="#2ec4b6" stroke-width="1.5"/>
-              <path d="M40,400 Q0,380 -40,400" fill="none" stroke="#2ec4b6" stroke-width="1.5"/>
-              <path d="M50,350 Q10,320 -30,340" fill="none" stroke="#2ec4b6" stroke-width="1.5"/>
-            </g>
-            <g class="tp-frond tp-f2" opacity="0.06" transform="translate(300,0)">
-              <path d="M60,800 Q30,600 50,400 Q70,300 30,200 Q10,100 40,0" fill="none" stroke="#3dd9a8" stroke-width="3"/>
-              <path d="M50,400 Q90,380 130,395" fill="none" stroke="#3dd9a8" stroke-width="1.5"/>
-              <path d="M50,350 Q90,325 125,340" fill="none" stroke="#3dd9a8" stroke-width="1.5"/>
-              <path d="M50,300 Q80,280 115,295" fill="none" stroke="#3dd9a8" stroke-width="1.5"/>
-              <path d="M50,400 Q10,375 -25,395" fill="none" stroke="#3dd9a8" stroke-width="1.5"/>
-              <path d="M50,350 Q15,325 -20,340" fill="none" stroke="#3dd9a8" stroke-width="1.5"/>
-            </g>
-            <g class="tp-frond tp-f3" opacity="0.07" transform="translate(150,100)">
-              <ellipse cx="0" cy="0" rx="50" ry="25" fill="#2ec4b6" transform="rotate(-30)"/>
-              <ellipse cx="30" cy="20" rx="45" ry="22" fill="#2ec4b6" transform="rotate(15)"/>
-              <path d="M-10,10 Q30,40 70,10" fill="none" stroke="#1a8a7e" stroke-width="1" opacity="0.5"/>
-            </g>
-            <g opacity="0.06">
-              <circle cx="200" cy="300" r="4" fill="#e87461"/>
-              <circle cx="80" cy="500" r="3" fill="#e87461"/>
-              <circle cx="330" cy="650" r="3.5" fill="#e87461"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'lemon-grove',
-        name: 'Lemon Grove',
-        colors: {
-          bg1: '#fefce8', bg2: '#fef9c3',
-          primary: '#ca8a04', primaryLight: '#fef08a',
-          accent: '#65a30d',
-          card: 'rgba(255,255,255,0.93)', cardBorder: 'rgba(254,240,138,0.6)',
-          text: '#3f3a1e', textLight: '#6b6540',
-          tileGradient1: '#fff', tileGradient2: '#fef9e8', tileBorder: '#e0d8a8',
-          shadow: 'rgba(202,138,4,0.15)', coral: '#ea580c',
-          mint: '#d9f99d', mintDark: '#65a30d', lavender: '#e0d8a8', lavenderLight: '#fef9c3',
-        },
-        imagenPrompt: 'Lemon branches with small songbirds, sunny yellow and soft blue watercolor, elegant botanical mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .lg-branch { animation: lgSway 20s ease-in-out infinite; transform-origin: top center; }
-                .lg-b2 { animation-delay: -7s; }
-                .lg-bird { animation: lgBird 8s ease-in-out infinite; }
-                @keyframes lgSway {
-                  0%,100% { transform: rotate(0deg); }
-                  50% { transform: rotate(2deg); }
-                }
-                @keyframes lgBird {
-                  0%,100% { transform: translate(0,0); }
-                  50% { transform: translate(5px,-3px); }
-                }
-              </style>
-            </defs>
-            <g class="lg-branch" opacity="0.1">
-              <path d="M-20,100 Q100,80 200,120 Q280,150 350,100" fill="none" stroke="#65a30d" stroke-width="2"/>
-              <ellipse cx="80" cy="90" rx="16" ry="20" fill="#fbbf24" opacity="0.5" transform="rotate(-10,80,90)"/>
-              <ellipse cx="200" cy="110" rx="14" ry="18" fill="#fbbf24" opacity="0.4" transform="rotate(15,200,110)"/>
-              <ellipse cx="60" cy="85" rx="10" ry="6" fill="#65a30d" opacity="0.6" transform="rotate(-30,60,85)"/>
-              <ellipse cx="140" cy="95" rx="12" ry="6" fill="#65a30d" opacity="0.5" transform="rotate(10,140,95)"/>
-              <ellipse cx="260" cy="130" rx="11" ry="5" fill="#65a30d" opacity="0.5" transform="rotate(-15,260,130)"/>
-            </g>
-            <g class="lg-branch lg-b2" opacity="0.08" transform="translate(50,450)">
-              <path d="M400,50 Q300,30 200,70 Q100,100 0,60" fill="none" stroke="#65a30d" stroke-width="2"/>
-              <ellipse cx="280" cy="45" rx="15" ry="19" fill="#fbbf24" opacity="0.5" transform="rotate(10,280,45)"/>
-              <ellipse cx="150" cy="80" rx="13" ry="17" fill="#fbbf24" opacity="0.4" transform="rotate(-20,150,80)"/>
-              <ellipse cx="320" cy="50" rx="10" ry="6" fill="#65a30d" opacity="0.5" transform="rotate(20,320,50)"/>
-            </g>
-            <g class="lg-bird" opacity="0.12" transform="translate(280,200)">
-              <path d="M0,0 Q5,-8 12,-4 L8,0 Q12,2 8,4 Z" fill="#6b6540"/>
-              <circle cx="10" cy="-3" r="1" fill="#3f3a1e"/>
-            </g>
-            <g class="lg-bird" opacity="0.1" transform="translate(100,380)" style="animation-delay:-3s">
-              <path d="M0,0 Q5,-8 12,-4 L8,0 Q12,2 8,4 Z" fill="#6b6540"/>
-              <circle cx="10" cy="-3" r="1" fill="#3f3a1e"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'peony-garden',
-        name: 'Peony Garden',
-        colors: {
-          bg1: '#fdf2f5', bg2: '#f8e8ed',
-          primary: '#be4d7a', primaryLight: '#f5d0de',
-          accent: '#8fb596',
-          card: 'rgba(255,255,255,0.93)', cardBorder: 'rgba(245,208,222,0.6)',
-          text: '#4a2840', textLight: '#7a5870',
-          tileGradient1: '#fff', tileGradient2: '#f8ede8', tileBorder: '#ddd0ce',
-          shadow: 'rgba(190,77,122,0.15)', coral: '#e8627a',
-          mint: '#c8e8d2', mintDark: '#6aaa80', lavender: '#d8b0c8', lavenderLight: '#f5d0de',
-        },
-        imagenPrompt: 'Large watercolor peonies in dusty rose and deep pink, sage green leaves, elegant floral mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .pn-bloom { animation: pnPulse 15s ease-in-out infinite; transform-origin: center; }
-                .pn-b2 { animation-delay: -5s; }
-                .pn-b3 { animation-delay: -10s; }
-                @keyframes pnPulse {
-                  0%,100% { transform: scale(1); opacity: 0.1; }
-                  50% { transform: scale(1.05); opacity: 0.14; }
-                }
-              </style>
-            </defs>
-            <g class="pn-bloom" transform="translate(80,150)">
-              <circle cx="0" cy="-15" r="18" fill="#be4d7a" opacity="0.12"/>
-              <circle cx="14" cy="-5" r="18" fill="#d46a90" opacity="0.1"/>
-              <circle cx="9" cy="12" r="18" fill="#be4d7a" opacity="0.11"/>
-              <circle cx="-9" cy="12" r="18" fill="#d46a90" opacity="0.1"/>
-              <circle cx="-14" cy="-5" r="18" fill="#be4d7a" opacity="0.12"/>
-              <circle cx="0" cy="0" r="8" fill="#f5d0de" opacity="0.3"/>
-            </g>
-            <g class="pn-bloom pn-b2" transform="translate(300,400) scale(1.3)">
-              <circle cx="0" cy="-15" r="18" fill="#d46a90" opacity="0.1"/>
-              <circle cx="14" cy="-5" r="18" fill="#be4d7a" opacity="0.09"/>
-              <circle cx="9" cy="12" r="18" fill="#d46a90" opacity="0.1"/>
-              <circle cx="-9" cy="12" r="18" fill="#be4d7a" opacity="0.09"/>
-              <circle cx="-14" cy="-5" r="18" fill="#d46a90" opacity="0.1"/>
-              <circle cx="0" cy="0" r="8" fill="#f5d0de" opacity="0.25"/>
-            </g>
-            <g class="pn-bloom pn-b3" transform="translate(200,650) scale(0.8)">
-              <circle cx="0" cy="-15" r="18" fill="#be4d7a" opacity="0.11"/>
-              <circle cx="14" cy="-5" r="18" fill="#d46a90" opacity="0.1"/>
-              <circle cx="9" cy="12" r="18" fill="#be4d7a" opacity="0.11"/>
-              <circle cx="-9" cy="12" r="18" fill="#d46a90" opacity="0.1"/>
-              <circle cx="-14" cy="-5" r="18" fill="#be4d7a" opacity="0.11"/>
-              <circle cx="0" cy="0" r="8" fill="#f5d0de" opacity="0.3"/>
-            </g>
-            <g opacity="0.08">
-              <ellipse cx="180" cy="200" rx="12" ry="6" fill="#8fb596" transform="rotate(-25,180,200)"/>
-              <ellipse cx="350" cy="550" rx="14" ry="7" fill="#8fb596" transform="rotate(15,350,550)"/>
-              <ellipse cx="60" cy="500" rx="10" ry="5" fill="#8fb596" transform="rotate(-10,60,500)"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'ocean-breeze',
-        name: 'Ocean Breeze',
-        colors: {
-          bg1: '#eef6fa', bg2: '#e0f0f8',
-          primary: '#2978a0', primaryLight: '#bcdff0',
-          accent: '#e8805a',
-          card: 'rgba(255,255,255,0.93)', cardBorder: 'rgba(188,223,240,0.6)',
-          text: '#1a3a4a', textLight: '#4a6e80',
-          tileGradient1: '#fff', tileGradient2: '#e8f2f5', tileBorder: '#b8ccd8',
-          shadow: 'rgba(41,120,160,0.15)', coral: '#e8805a',
-          mint: '#b8dae0', mintDark: '#2978a0', lavender: '#a8c8d8', lavenderLight: '#d8eef5',
-        },
-        imagenPrompt: 'Ocean waves with seashells and coral, navy and seafoam watercolor, elegant coastal mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .ob-wave { animation: obWave 10s ease-in-out infinite; }
-                .ob-w2 { animation-delay: -3s; animation-duration: 14s; }
-                .ob-w3 { animation-delay: -7s; animation-duration: 12s; }
-                @keyframes obWave {
-                  0%,100% { transform: translateX(0); }
-                  50% { transform: translateX(15px); }
-                }
-              </style>
-            </defs>
-            <g class="ob-wave" opacity="0.08">
-              <path d="M-50,200 Q50,170 150,200 Q250,230 350,200 Q450,170 550,200" fill="none" stroke="#2978a0" stroke-width="2.5"/>
-              <path d="M-50,215 Q50,185 150,215 Q250,245 350,215 Q450,185 550,215" fill="none" stroke="#2978a0" stroke-width="1.5"/>
-            </g>
-            <g class="ob-wave ob-w2" opacity="0.06">
-              <path d="M-50,400 Q50,370 150,400 Q250,430 350,400 Q450,370 550,400" fill="none" stroke="#4a9ec0" stroke-width="2.5"/>
-              <path d="M-50,415 Q50,385 150,415 Q250,445 350,415 Q450,385 550,415" fill="none" stroke="#4a9ec0" stroke-width="1.5"/>
-            </g>
-            <g class="ob-wave ob-w3" opacity="0.07">
-              <path d="M-50,600 Q50,570 150,600 Q250,630 350,600 Q450,570 550,600" fill="none" stroke="#2978a0" stroke-width="2"/>
-              <path d="M-50,615 Q50,585 150,615 Q250,645 350,615 Q450,585 550,615" fill="none" stroke="#2978a0" stroke-width="1.2"/>
-            </g>
-            <g opacity="0.08">
-              <path d="M100,300 Q105,290 115,295 Q120,300 115,305 Q110,302 105,308 Q100,305 100,300Z" fill="#e8805a"/>
-              <path d="M300,500 Q305,490 315,495 Q320,500 315,505 Q310,502 305,508 Q300,505 300,500Z" fill="#e8805a"/>
-              <circle cx="200" cy="350" r="4" fill="none" stroke="#2978a0" stroke-width="1" opacity="0.5"/>
-              <circle cx="200" cy="350" r="2.5" fill="none" stroke="#2978a0" stroke-width="0.8" opacity="0.4"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'wisteria',
-        name: 'Wisteria',
-        colors: {
-          bg1: '#f3eef8', bg2: '#ece4f5',
-          primary: '#7c4dbd', primaryLight: '#d8c8f0',
-          accent: '#8ab870',
-          card: 'rgba(255,255,255,0.93)', cardBorder: 'rgba(216,200,240,0.6)',
-          text: '#3a2850', textLight: '#6a5880',
-          tileGradient1: '#fff', tileGradient2: '#f0e8f5', tileBorder: '#ccc0d8',
-          shadow: 'rgba(124,77,189,0.15)', coral: '#a868c8',
-          mint: '#c8e0b8', mintDark: '#6a9a55', lavender: '#b898d8', lavenderLight: '#e0d0f0',
-        },
-        imagenPrompt: 'Hanging wisteria vines in lavender and purple, soft green leaves, elegant botanical mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .ws-vine { animation: wsSway 14s ease-in-out infinite; transform-origin: top center; }
-                .ws-v2 { animation-delay: -4s; animation-duration: 18s; }
-                .ws-v3 { animation-delay: -9s; animation-duration: 16s; }
-                .ws-v4 { animation-delay: -2s; }
-                @keyframes wsSway {
-                  0%,100% { transform: rotate(0deg); }
-                  33% { transform: rotate(2deg); }
-                  66% { transform: rotate(-1.5deg); }
-                }
-              </style>
-            </defs>
-            <g class="ws-vine" opacity="0.1">
-              <path d="M80,0 Q85,50 78,100 Q72,150 82,200 Q88,250 75,300" fill="none" stroke="#8ab870" stroke-width="1.5"/>
-              <circle cx="78" cy="60" r="3.5" fill="#9b6ec8"/><circle cx="80" cy="75" r="4" fill="#8858b8"/>
-              <circle cx="76" cy="90" r="3.5" fill="#9b6ec8"/><circle cx="79" cy="105" r="3" fill="#a878d0"/>
-              <circle cx="82" cy="120" r="4" fill="#8858b8"/><circle cx="77" cy="135" r="3.5" fill="#9b6ec8"/>
-              <circle cx="80" cy="150" r="3" fill="#a878d0"/><circle cx="75" cy="165" r="2.5" fill="#b898d8"/>
-            </g>
-            <g class="ws-vine ws-v2" opacity="0.08" transform="translate(180,0)">
-              <path d="M0,0 Q5,60 -3,120 Q-8,180 2,240 Q8,300 -5,360" fill="none" stroke="#8ab870" stroke-width="1.5"/>
-              <circle cx="-1" cy="50" r="3.5" fill="#7c4dbd"/><circle cx="1" cy="70" r="4" fill="#9b6ec8"/>
-              <circle cx="-3" cy="90" r="3.5" fill="#7c4dbd"/><circle cx="0" cy="110" r="3" fill="#9b6ec8"/>
-              <circle cx="3" cy="130" r="4" fill="#8858b8"/><circle cx="-2" cy="150" r="3.5" fill="#9b6ec8"/>
-              <circle cx="1" cy="170" r="3" fill="#a878d0"/><circle cx="-1" cy="190" r="2.5" fill="#b898d8"/>
-              <circle cx="2" cy="210" r="2" fill="#d8c8f0"/>
-            </g>
-            <g class="ws-vine ws-v3" opacity="0.09" transform="translate(300,0)">
-              <path d="M0,0 Q-5,45 3,90 Q8,135 -2,180 Q-8,225 5,270" fill="none" stroke="#8ab870" stroke-width="1.5"/>
-              <circle cx="1" cy="40" r="3" fill="#7c4dbd"/><circle cx="-1" cy="58" r="3.5" fill="#9b6ec8"/>
-              <circle cx="3" cy="76" r="3" fill="#8858b8"/><circle cx="0" cy="94" r="3.5" fill="#9b6ec8"/>
-              <circle cx="-3" cy="112" r="3" fill="#a878d0"/><circle cx="1" cy="130" r="2.5" fill="#b898d8"/>
-              <circle cx="-1" cy="148" r="2" fill="#d8c8f0"/>
-            </g>
-            <g class="ws-vine ws-v4" opacity="0.06" transform="translate(40,200)">
-              <path d="M0,0 Q3,40 -2,80 Q-5,120 2,160" fill="none" stroke="#8ab870" stroke-width="1.2"/>
-              <circle cx="0" cy="30" r="3" fill="#9b6ec8"/><circle cx="-2" cy="50" r="3.5" fill="#8858b8"/>
-              <circle cx="1" cy="70" r="3" fill="#9b6ec8"/><circle cx="-1" cy="90" r="2.5" fill="#a878d0"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'chinoiserie',
-        name: 'Chinoiserie',
-        colors: {
-          bg1: '#eef2fa', bg2: '#e0e8f5',
-          primary: '#1e4a8a', primaryLight: '#b8c8e8',
-          accent: '#c0392b',
-          card: 'rgba(255,255,255,0.94)', cardBorder: 'rgba(184,200,232,0.6)',
-          text: '#1a2a4a', textLight: '#4a5a7a',
-          tileGradient1: '#fff', tileGradient2: '#e8eef5', tileBorder: '#b8c0d0',
-          shadow: 'rgba(30,74,138,0.15)', coral: '#c0392b',
-          mint: '#b8d0e8', mintDark: '#2a6ab0', lavender: '#a8b8d0', lavenderLight: '#d0ddf0',
-        },
-        imagenPrompt: 'Classic chinoiserie in cobalt blue and white with red accents, Greek key border, medallion pattern, elegant mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .ch-medallion { animation: chSpin 60s linear infinite; transform-origin: center; }
-                @keyframes chSpin {
-                  0% { transform: rotate(0deg); }
-                  100% { transform: rotate(360deg); }
-                }
-              </style>
-              <pattern id="chKey" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M0,0 L5,0 L5,5 L10,5 L10,0 L15,0 L15,10 L10,10 L10,15 L5,15 L5,10 L0,10 Z" fill="none" stroke="#1e4a8a" stroke-width="0.4" opacity="0.06"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#chKey)"/>
-            <g class="ch-medallion" transform="translate(200,400)" opacity="0.06">
-              <circle cx="0" cy="0" r="60" fill="none" stroke="#1e4a8a" stroke-width="1.5"/>
-              <circle cx="0" cy="0" r="50" fill="none" stroke="#1e4a8a" stroke-width="0.8"/>
-              <circle cx="0" cy="0" r="40" fill="none" stroke="#1e4a8a" stroke-width="0.5"/>
-              <path d="M0,-45 L5,-10 L40,-30 L10,-5 L45,0 L10,5 L40,30 L5,10 L0,45 L-5,10 L-40,30 L-10,5 L-45,0 L-10,-5 L-40,-30 L-5,-10 Z" fill="#1e4a8a" opacity="0.3"/>
-            </g>
-            <g opacity="0.05">
-              <circle cx="100" cy="100" r="3" fill="#c0392b"/>
-              <circle cx="350" cy="200" r="2.5" fill="#c0392b"/>
-              <circle cx="50" cy="600" r="3" fill="#c0392b"/>
-              <circle cx="300" cy="700" r="2" fill="#c0392b"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'golden-hour',
-        name: 'Golden Hour',
-        colors: {
-          bg1: '#fef7e8', bg2: '#fdf0d5',
-          primary: '#b8860b', primaryLight: '#f5dea0',
-          accent: '#d4a574',
-          card: 'rgba(255,255,255,0.93)', cardBorder: 'rgba(245,222,160,0.6)',
-          text: '#4a3820', textLight: '#7a6848',
-          tileGradient1: '#fff', tileGradient2: '#f8f0e0', tileBorder: '#ddd0b0',
-          shadow: 'rgba(184,134,11,0.15)', coral: '#d4a574',
-          mint: '#e8daa0', mintDark: '#a07820', lavender: '#d8c890', lavenderLight: '#f5e8c0',
-        },
-        imagenPrompt: 'Golden sunset rays through bamboo silhouettes, warm amber and ivory, elegant Asian-inspired mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .gh-ray { animation: ghGlow 12s ease-in-out infinite; transform-origin: top center; }
-                .gh-r2 { animation-delay: -4s; }
-                .gh-r3 { animation-delay: -8s; }
-                .gh-bamboo { animation: ghSway 20s ease-in-out infinite; transform-origin: bottom center; }
-                @keyframes ghGlow {
-                  0%,100% { opacity: 0.04; }
-                  50% { opacity: 0.08; }
-                }
-                @keyframes ghSway {
-                  0%,100% { transform: rotate(0deg); }
-                  50% { transform: rotate(1deg); }
-                }
-              </style>
-              <linearGradient id="ghRay" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#b8860b" stop-opacity="0.15"/>
-                <stop offset="100%" stop-color="#b8860b" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <g class="gh-ray">
-              <polygon points="180,0 220,0 280,800 120,800" fill="url(#ghRay)"/>
-            </g>
-            <g class="gh-ray gh-r2">
-              <polygon points="80,0 110,0 180,800 20,800" fill="url(#ghRay)"/>
-            </g>
-            <g class="gh-ray gh-r3">
-              <polygon points="300,0 340,0 400,800 240,800" fill="url(#ghRay)"/>
-            </g>
-            <g class="gh-bamboo" opacity="0.08">
-              <line x1="320" y1="200" x2="320" y2="800" stroke="#6a5020" stroke-width="3"/>
-              <line x1="320" y1="300" x2="320" y2="305" stroke="#6a5020" stroke-width="5"/>
-              <line x1="320" y1="450" x2="320" y2="455" stroke="#6a5020" stroke-width="5"/>
-              <line x1="320" y1="600" x2="320" y2="605" stroke="#6a5020" stroke-width="5"/>
-              <path d="M320,310 Q340,300 355,310 Q345,305 340,315" fill="#6a5020" opacity="0.6"/>
-              <path d="M320,460 Q300,450 285,460 Q295,455 300,465" fill="#6a5020" opacity="0.6"/>
-            </g>
-            <g class="gh-bamboo" opacity="0.06" transform="translate(-250,100)">
-              <line x1="320" y1="200" x2="320" y2="700" stroke="#6a5020" stroke-width="2.5"/>
-              <line x1="320" y1="280" x2="320" y2="285" stroke="#6a5020" stroke-width="4.5"/>
-              <line x1="320" y1="420" x2="320" y2="425" stroke="#6a5020" stroke-width="4.5"/>
-              <path d="M320,290 Q340,280 355,290 Q345,285 340,295" fill="#6a5020" opacity="0.5"/>
-            </g>
-          </svg>`;
-        }
-      },
-      {
-        id: 'midnight-garden',
-        name: 'Midnight Garden',
-        colors: {
-          bg1: '#0f1a2e', bg2: '#162038',
-          primary: '#e85d8a', primaryLight: '#3a2848',
-          accent: '#c9a84c',
-          card: 'rgba(22,32,56,0.92)', cardBorder: 'rgba(58,40,72,0.6)',
-          text: '#e0d8e8', textLight: '#a898b8',
-          tileGradient1: '#2a2040', tileGradient2: '#1a1530', tileBorder: '#4a3860',
-          shadow: 'rgba(0,0,0,0.3)', coral: '#e85d8a',
-          mint: '#2a5858', mintDark: '#48c8a8', lavender: '#6858a0', lavenderLight: '#3a2848',
-        },
-        imagenPrompt: 'Dark midnight garden with glowing magenta flowers and gold accents, deep navy and teal, elegant botanical mahjong tablescape background',
-        bgSvg: function() {
-          return `<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>
-                .mg-glow { animation: mgPulse 8s ease-in-out infinite; }
-                .mg-g2 { animation-delay: -3s; }
-                .mg-g3 { animation-delay: -5s; }
-                .mg-g4 { animation-delay: -1s; }
-                .mg-g5 { animation-delay: -7s; }
-                @keyframes mgPulse {
-                  0%,100% { opacity: 0.08; filter: blur(0); }
-                  50% { opacity: 0.18; filter: blur(1px); }
-                }
-              </style>
-              <radialGradient id="mgFlower" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#e85d8a" stop-opacity="0.6"/>
-                <stop offset="100%" stop-color="#e85d8a" stop-opacity="0"/>
-              </radialGradient>
-              <radialGradient id="mgFlower2" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.5"/>
-                <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-            <g class="mg-glow" transform="translate(80,200)">
-              <circle cx="0" cy="0" r="25" fill="url(#mgFlower)"/>
-              <circle cx="0" cy="-10" r="6" fill="none" stroke="#e85d8a" stroke-width="0.5" opacity="0.4"/>
-              <circle cx="8" cy="3" r="6" fill="none" stroke="#e85d8a" stroke-width="0.5" opacity="0.4"/>
-              <circle cx="-8" cy="3" r="6" fill="none" stroke="#e85d8a" stroke-width="0.5" opacity="0.4"/>
-              <circle cx="5" cy="-6" r="6" fill="none" stroke="#e85d8a" stroke-width="0.5" opacity="0.4"/>
-              <circle cx="-5" cy="-6" r="6" fill="none" stroke="#e85d8a" stroke-width="0.5" opacity="0.4"/>
-            </g>
-            <g class="mg-glow mg-g2" transform="translate(300,350)">
-              <circle cx="0" cy="0" r="30" fill="url(#mgFlower2)"/>
-              <circle cx="0" cy="-12" r="7" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
-              <circle cx="10" cy="4" r="7" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
-              <circle cx="-10" cy="4" r="7" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.3"/>
-            </g>
-            <g class="mg-glow mg-g3" transform="translate(180,550)">
-              <circle cx="0" cy="0" r="22" fill="url(#mgFlower)"/>
-              <circle cx="0" cy="-8" r="5" fill="none" stroke="#e85d8a" stroke-width="0.5" opacity="0.35"/>
-              <circle cx="7" cy="3" r="5" fill="none" stroke="#e85d8a" stroke-width="0.5" opacity="0.35"/>
-              <circle cx="-7" cy="3" r="5" fill="none" stroke="#e85d8a" stroke-width="0.5" opacity="0.35"/>
-            </g>
-            <g class="mg-glow mg-g4" transform="translate(350,150)">
-              <circle cx="0" cy="0" r="18" fill="url(#mgFlower)"/>
-            </g>
-            <g class="mg-glow mg-g5" transform="translate(50,700)">
-              <circle cx="0" cy="0" r="20" fill="url(#mgFlower2)"/>
-            </g>
-            <g opacity="0.06">
-              <path d="M80,250 Q80,300 60,350" fill="none" stroke="#48c8a8" stroke-width="1"/>
-              <path d="M300,400 Q310,450 290,500" fill="none" stroke="#48c8a8" stroke-width="1"/>
-              <ellipse cx="70" cy="290" rx="8" ry="4" fill="#48c8a8" transform="rotate(-30,70,290)"/>
-              <ellipse cx="305" cy="430" rx="8" ry="4" fill="#48c8a8" transform="rotate(20,305,430)"/>
-            </g>
-          </svg>`;
-        }
-      }
-    ];
-
     // ─── State ───
     const state = {
       tab: 'charleston',
       // Theme
-      theme: localStorage.getItem('mj-theme') || 'cherry-blossom',
+      theme: 'default',
       themePickerOpen: false,
-      aiBackgroundLoading: false,
       aiBackground: localStorage.getItem('mj-ai-bg') || null,
+      // Quiz
+      quizStep: 0,        // 0 = not started, 1-4 = questions, 5 = generating, 6 = done
+      quizAnswers: {},
+      quizOpen: false,
       // Tiles
       handImage: null,
       handPreview: null,
@@ -1575,7 +1015,7 @@
       matchResults: null,
       matchLoading: false,
       // Highlight tiles (when user taps a target hand)
-      highlightTiles: null,  // array of tile codes to highlight, or null
+      highlightTiles: null,
       highlightHandName: null,
       // Card year
       cardYear: '2025',
@@ -1589,13 +1029,13 @@
     };
 
     const CHARLESTON_ROUNDS = [
-      { name: 'Right', dir: '→', label: '1st Right' },
-      { name: 'Across', dir: '↕', label: '1st Across' },
-      { name: 'Left', dir: '←', label: '1st Left' },
-      { name: 'Left', dir: '←', label: '2nd Left' },
-      { name: 'Across', dir: '↕', label: '2nd Across' },
-      { name: 'Right', dir: '→', label: '2nd Right' },
-      { name: 'Across', dir: '↕', label: 'Optional Across', optional: true }
+      { name: 'Right', dir: '\u2192', label: '1st Right' },
+      { name: 'Across', dir: '\u2195', label: '1st Across' },
+      { name: 'Left', dir: '\u2190', label: '1st Left' },
+      { name: 'Left', dir: '\u2190', label: '2nd Left' },
+      { name: 'Across', dir: '\u2195', label: '2nd Across' },
+      { name: 'Right', dir: '\u2192', label: '2nd Right' },
+      { name: 'Across', dir: '\u2195', label: 'Optional Across', optional: true }
     ];
 
     // ─── SVG Icons ───
@@ -1667,7 +1107,7 @@
         <rect x="1" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
         <rect x="25" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
         <rect x="49" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
-        <text x="11" y="23" text-anchor="middle" font-family="serif" font-size="18" font-weight="bold" fill="#e05c6c">万</text>
+        <text x="11" y="23" text-anchor="middle" font-family="serif" font-size="18" font-weight="bold" fill="#e05c6c">\u4E07</text>
         <line x1="33" y1="8" x2="33" y2="28" stroke="#3d9970" stroke-width="2.5" stroke-linecap="round"/>
         <line x1="37" y1="8" x2="37" y2="28" stroke="#3d9970" stroke-width="2.5" stroke-linecap="round"/>
         <circle cx="59" cy="18" r="6" fill="#5b8ed4"/>
@@ -1681,87 +1121,109 @@
     }
 
     // ─── Theme system ───
-    function applyTheme(themeId) {
-      const theme = THEMES.find(t => t.id === themeId);
-      if (!theme) return;
-      const root = document.documentElement;
-      const c = theme.colors;
-
-      root.style.setProperty('--pink', c.primary);
-      root.style.setProperty('--pink-light', c.primaryLight);
-      root.style.setProperty('--pink-dark', c.primary);
-      root.style.setProperty('--coral', c.coral);
-      root.style.setProperty('--peach', c.primaryLight);
-      root.style.setProperty('--mint', c.mint);
-      root.style.setProperty('--mint-dark', c.mintDark);
-      root.style.setProperty('--lavender', c.lavender);
-      root.style.setProperty('--lavender-light', c.lavenderLight);
-      root.style.setProperty('--cream', c.bg1);
-      root.style.setProperty('--warm-white', c.bg2);
-      root.style.setProperty('--text', c.text);
-      root.style.setProperty('--text-light', c.textLight);
-      root.style.setProperty('--shadow', c.shadow);
-      root.style.setProperty('--shadow-strong', c.shadow.replace(/[\d.]+\)$/, '0.4)'));
-      root.style.setProperty('--card-bg', c.card);
-      root.style.setProperty('--card-border', c.cardBorder);
-
-      // Update background
+    function applyTheme() {
       const bgEl = document.getElementById('themeBg');
       if (bgEl) {
-        // Check for AI-generated background
         if (state.aiBackground) {
-          bgEl.innerHTML = '';
           bgEl.classList.add('ai-bg');
           bgEl.style.backgroundImage = `url(${state.aiBackground})`;
         } else {
           bgEl.classList.remove('ai-bg');
           bgEl.style.backgroundImage = '';
-          bgEl.innerHTML = theme.bgSvg();
         }
-      }
-
-      state.theme = themeId;
-      localStorage.setItem('mj-theme', themeId);
-    }
-
-    async function generateAiBackground() {
-      const theme = THEMES.find(t => t.id === state.theme);
-      if (!theme) return;
-
-      state.aiBackgroundLoading = true;
-      render();
-
-      try {
-        const res = await fetch('/api/generate-bg', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: theme.imagenPrompt })
-        });
-        const data = await res.json();
-        if (data.error) throw new Error(data.error);
-        if (data.image) {
-          state.aiBackground = data.image;
-          localStorage.setItem('mj-ai-bg', data.image);
-          state.aiBackgroundLoading = false;
-          applyTheme(state.theme);
-          render();
-          toast('AI background generated!');
-        } else {
-          throw new Error('No image returned');
-        }
-      } catch (err) {
-        state.aiBackgroundLoading = false;
-        render();
-        toast('Could not generate background: ' + err.message);
       }
     }
 
     function clearAiBackground() {
       state.aiBackground = null;
       localStorage.removeItem('mj-ai-bg');
-      applyTheme(state.theme);
+      applyTheme();
       render();
-      toast('AI background removed');
+      toast('Background removed');
+    }
+
+    // ─── Quiz prompt generation ───
+    function buildQuizPrompt(answers) {
+      const vibes = {
+        'garden': 'lush garden with pink peonies, soft roses, and trailing ivy on linen',
+        'beach': 'tropical beach scene with turquoise water, palm fronds, and coral shells on sand',
+        'evening': 'elegant evening scene with deep jewel tones, gold filigree, and candlelight on velvet',
+        'brunch': 'bright sunny brunch table with lemons, fresh herbs, and wildflowers on white cotton'
+      };
+
+      const patterns = {
+        'geometric': 'with geometric lattice and tile patterns woven throughout',
+        'botanical': 'with detailed botanical illustrations of leaves and flowers',
+        'chinoiserie': 'in chinoiserie style with ornate frames, dragons, and traditional motifs',
+        'minimal': 'with clean minimal composition and lots of negative space'
+      };
+
+      const tables = {
+        'bamboo': 'incorporating natural bamboo, jade stones, and zen garden elements',
+        'flowers': 'surrounded by abundant fresh flower arrangements in full bloom',
+        'candles': 'with warm candlelight, gold leaf accents, and rich textures',
+        'coastal': 'with seashells, smooth stones, driftwood, and ocean-inspired elements'
+      };
+
+      const colors = {
+        'pink': 'in a palette of dusty rose, blush pink, and soft cream',
+        'green': 'in a palette of sage green, seafoam, and ivory',
+        'blue': 'in a palette of cornflower blue, periwinkle, and lavender',
+        'gold': 'in a palette of warm amber, golden yellow, and soft peach'
+      };
+
+      return `Beautiful decorative background for a mahjong game app. ${vibes[answers.vibe] || ''} ${patterns[answers.pattern] || ''} ${tables[answers.table] || ''} ${colors[answers.color] || ''}. Elegant, modern, feminine aesthetic. No text. No tiles. Soft watercolor style. Seamless pattern suitable for a phone wallpaper.`;
+    }
+
+    async function generateQuizBackground(answers) {
+      const prompt = buildQuizPrompt(answers);
+      try {
+        const res = await fetch('/api/generate-bg', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        if (data.image) {
+          localStorage.setItem('mj-ai-bg', data.image);
+          setState({ aiBackground: data.image, quizStep: 6 });
+          applyTheme();
+        } else {
+          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed. Try again!' });
+        }
+      } catch (err) {
+        setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed. Try again!' });
+      }
+    }
+
+    async function generateRandomBackground() {
+      const prompts = [
+        'Elegant chinoiserie wallpaper with pink peonies, teal leaves, and gold accents on cream silk. No text. Watercolor style.',
+        'Tropical botanical pattern with monstera leaves, hibiscus flowers, and hummingbirds in coral and teal. No text. Seamless.',
+        'Japanese garden scene with cherry blossoms, koi fish, and stone lanterns in soft pink and sage green. No text. Watercolor.',
+        'Mediterranean lemon grove with blue tiles, terracotta, and flowering vines. Bright and cheerful. No text. Watercolor.',
+        'Art deco pattern with geometric shapes, gold lines, and jade green accents on navy blue. No text. Elegant.',
+      ];
+      const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+      setState({ themePickerOpen: false, quizOpen: true, quizStep: 5, quizAnswers: {} });
+
+      try {
+        const res = await fetch('/api/generate-bg', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        if (data.image) {
+          localStorage.setItem('mj-ai-bg', data.image);
+          setState({ aiBackground: data.image, quizStep: 6 });
+          applyTheme();
+        } else {
+          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed.' });
+        }
+      } catch (err) {
+        setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed.' });
+      }
     }
 
     function toast(msg) {
@@ -1957,7 +1419,6 @@
 
       app.addEventListener('click', e => {
         // If click is inside a modal sheet but NOT on an action button, ignore it
-        // (prevents overlay close when clicking sheet background)
         const sheet = e.target.closest('[data-modal-sheet]');
         if (sheet && !e.target.closest('[data-action]')) return;
 
@@ -1965,7 +1426,7 @@
         if (!t) return;
 
         // If the action is an overlay close and click originated inside the sheet, skip
-        if ((t.classList.contains('theme-sheet-overlay') || t.classList.contains('tile-picker-overlay')) && sheet) return;
+        if ((t.classList.contains('theme-sheet-overlay') || t.classList.contains('tile-picker-overlay') || t.classList.contains('quiz-sheet-overlay')) && sheet) return;
 
         const action = t.dataset.action;
 
@@ -2043,16 +1504,16 @@
             getHandMatches();
             break;
 
-          case 'highlight-hand':
+          case 'highlight-hand': {
             const handName = t.dataset.handName;
             const handTiles = JSON.parse(t.dataset.handTiles || '[]');
             if (state.highlightHandName === handName) {
-              // Toggle off if already active
               setState({ highlightTiles: null, highlightHandName: null });
             } else {
               setState({ highlightTiles: handTiles, highlightHandName: handName });
             }
             break;
+          }
 
           case 'new-hand':
             setState({
@@ -2070,19 +1531,36 @@
             setState({ themePickerOpen: false });
             break;
 
-          case 'select-theme':
-            const themeId = t.dataset.themeId;
-            if (themeId) {
-              // Clear AI background when switching themes
-              state.aiBackground = null;
-              localStorage.removeItem('mj-ai-bg');
-              applyTheme(themeId);
-              render();
-            }
+          case 'start-quiz':
+            setState({ themePickerOpen: false, quizOpen: true, quizStep: 1, quizAnswers: {} });
             break;
 
-          case 'generate-ai-bg':
-            generateAiBackground();
+          case 'quiz-answer': {
+            const questionKey = t.dataset.question;
+            const answerValue = t.dataset.answer;
+            const newAnswers = { ...state.quizAnswers, [questionKey]: answerValue };
+            const nextStep = state.quizStep + 1;
+
+            if (nextStep <= 4) {
+              setState({ quizAnswers: newAnswers, quizStep: nextStep });
+            } else {
+              // Generate background
+              setState({ quizAnswers: newAnswers, quizStep: 5 });
+              generateQuizBackground(newAnswers);
+            }
+            break;
+          }
+
+          case 'close-quiz':
+            setState({ quizOpen: false, quizStep: 0 });
+            break;
+
+          case 'generate-random-bg':
+            generateRandomBackground();
+            break;
+
+          case 'quiz-done':
+            setState({ quizOpen: false, quizStep: 0 });
             break;
 
           case 'clear-ai-bg':
@@ -2120,57 +1598,157 @@
     }
 
     // ─── Render ───
+    function renderQuiz() {
+      if (!state.quizOpen) return '';
+
+      const questions = [
+        {
+          step: 1,
+          text: "What's your vibe?",
+          key: 'vibe',
+          options: [
+            { emoji: '\uD83C\uDF38', label: 'Garden Party', value: 'garden' },
+            { emoji: '\uD83C\uDF0A', label: 'Beach Day', value: 'beach' },
+            { emoji: '\uD83C\uDF19', label: 'Evening Soir\u00E9e', value: 'evening' },
+            { emoji: '\uD83C\uDF4B', label: 'Brunch in the Sun', value: 'brunch' }
+          ]
+        },
+        {
+          step: 2,
+          text: 'Pick a pattern',
+          key: 'pattern',
+          options: [
+            { emoji: '\uD83D\uDD37', label: 'Geometric', value: 'geometric' },
+            { emoji: '\uD83C\uDF3F', label: 'Botanical', value: 'botanical' },
+            { emoji: '\uD83D\uDC09', label: 'Chinoiserie', value: 'chinoiserie' },
+            { emoji: '\u2728', label: 'Minimal', value: 'minimal' }
+          ]
+        },
+        {
+          step: 3,
+          text: 'Your ideal mahjong table has...',
+          key: 'table',
+          options: [
+            { emoji: '\uD83C\uDF8B', label: 'Bamboo & jade', value: 'bamboo' },
+            { emoji: '\uD83C\uDF3A', label: 'Fresh flowers', value: 'flowers' },
+            { emoji: '\uD83D\uDD6F\uFE0F', label: 'Candles & gold', value: 'candles' },
+            { emoji: '\uD83D\uDC1A', label: 'Shells & driftwood', value: 'coastal' }
+          ]
+        },
+        {
+          step: 4,
+          text: 'Pick a color that makes you happy',
+          key: 'color',
+          type: 'colors',
+          options: [
+            { color: '#d4829c', label: 'Blush', value: 'pink' },
+            { color: '#8fb596', label: 'Sage', value: 'green' },
+            { color: '#7b9fd4', label: 'Periwinkle', value: 'blue' },
+            { color: '#dba754', label: 'Golden', value: 'gold' }
+          ]
+        }
+      ];
+
+      // Generating state
+      if (state.quizStep === 5) {
+        return `
+          <div class="quiz-sheet-overlay">
+            <div class="quiz-sheet" data-modal-sheet>
+              <div style="padding:20px 0;">
+                <div class="loading-tiles" style="display:flex;justify-content:center;gap:6px;margin-bottom:20px;">
+                  <div class="loading-tile"></div>
+                  <div class="loading-tile"></div>
+                  <div class="loading-tile"></div>
+                </div>
+                <h3 style="font-family:'Outfit',sans-serif;font-size:18px;color:var(--text);text-align:center;">Creating your personal vibe...</h3>
+                <p style="font-size:13px;color:var(--text-light);text-align:center;margin-top:8px;">This takes about 10 seconds</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Done state
+      if (state.quizStep === 6) {
+        return `
+          <div class="quiz-sheet-overlay">
+            <div class="quiz-sheet" data-modal-sheet>
+              <h3 style="font-family:'Outfit',sans-serif;font-size:20px;color:var(--pink-dark);text-align:center;margin-bottom:12px;">Your vibe is ready!</h3>
+              ${state.aiBackground ? `
+                <div style="border-radius:12px;overflow:hidden;margin-bottom:16px;">
+                  <img src="${state.aiBackground}" style="width:100%;display:block;border-radius:12px;max-height:250px;object-fit:cover;" />
+                </div>
+              ` : ''}
+              <button class="btn btn-primary" data-action="quiz-done">Love it!</button>
+              <button class="btn btn-secondary" data-action="start-quiz" style="margin-top:8px;">Try again</button>
+            </div>
+          </div>
+        `;
+      }
+
+      // Question state
+      const q = questions[state.quizStep - 1];
+      if (!q) return '';
+
+      return `
+        <div class="quiz-sheet-overlay" data-action="close-quiz">
+          <div class="quiz-sheet" data-modal-sheet>
+            <div class="quiz-progress">
+              <div class="quiz-progress-bar" style="width: ${(state.quizStep / 4) * 100}%"></div>
+            </div>
+            <h3 class="quiz-question">${q.text}</h3>
+            ${q.type === 'colors' ? `
+              <div class="quiz-color-options">
+                ${q.options.map(o => `
+                  <div class="quiz-color-option" data-action="quiz-answer" data-question="${q.key}" data-answer="${o.value}">
+                    <div class="quiz-color-swatch" style="background:${o.color};"></div>
+                    <div class="quiz-color-label">${o.label}</div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `
+              <div class="quiz-options">
+                ${q.options.map(o => `
+                  <div class="quiz-option" data-action="quiz-answer" data-question="${q.key}" data-answer="${o.value}">
+                    <span class="quiz-emoji">${o.emoji}</span>
+                    <span class="quiz-label">${o.label}</span>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
     function renderThemePicker() {
       if (!state.themePickerOpen) return '';
-      const currentTheme = state.theme;
       return `
         <div class="theme-sheet-overlay" data-action="close-theme-picker">
           <div class="theme-sheet" data-modal-sheet>
-            <h3>Choose a Theme</h3>
-            <p class="subtitle">Pick a vibe for your game</p>
-            <div class="theme-grid">
-              ${THEMES.map(t => {
-                const isActive = t.id === currentTheme;
-                return `
-                  <div class="theme-swatch ${isActive ? 'active' : ''}" data-action="select-theme" data-theme-id="${t.id}"
-                       style="background: linear-gradient(135deg, ${t.colors.bg1}, ${t.colors.bg2});">
-                    ${isActive ? '<div class="check-mark">&#10003;</div>' : ''}
-                    <div class="theme-swatch-preview" style="background: linear-gradient(135deg, ${t.colors.primary}, ${t.colors.primaryLight}); border-radius: 8px;">
-                      <div style="display:flex;gap:3px;padding:12px 8px;justify-content:center;">
-                        <span style="width:16px;height:22px;border-radius:3px;background:linear-gradient(180deg,${t.colors.tileGradient1},${t.colors.tileGradient2});border:1px solid ${t.colors.tileBorder};"></span>
-                        <span style="width:16px;height:22px;border-radius:3px;background:linear-gradient(180deg,${t.colors.tileGradient1},${t.colors.tileGradient2});border:1px solid ${t.colors.tileBorder};"></span>
-                        <span style="width:16px;height:22px;border-radius:3px;background:linear-gradient(180deg,${t.colors.tileGradient1},${t.colors.tileGradient2});border:1px solid ${t.colors.tileBorder};"></span>
-                      </div>
-                    </div>
-                    <div class="theme-swatch-name" style="color: ${t.colors.text};">${t.name}</div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-            <div class="ai-bg-section">
-              <div class="ai-label">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
-                AI Generated Background
+            <h3>Your Background</h3>
+
+            ${state.aiBackground ? `
+              <div class="current-bg-preview">
+                <img src="${state.aiBackground}" style="width:100%;border-radius:12px;max-height:200px;object-fit:cover;" />
               </div>
-              ${state.aiBackgroundLoading ? `
-                <div class="ai-bg-loading">
-                  <div class="loading-tiles" style="justify-content:center;margin-bottom:8px;">
-                    <div class="loading-tile"></div><div class="loading-tile"></div><div class="loading-tile"></div>
-                  </div>
-                  Generating your custom background...
-                </div>
-              ` : `
-                <button class="ai-bg-btn" data-action="generate-ai-bg">
-                  Generate Custom Background for "${THEMES.find(t => t.id === currentTheme)?.name || ''}"
-                </button>
-                ${state.aiBackground ? `
-                  <button class="btn btn-secondary btn-small" data-action="clear-ai-bg" style="margin-top:8px;width:100%;">
-                    Remove AI Background
-                  </button>
-                ` : ''}
-              `}
-              <p style="font-size:11px;color:var(--text-light);margin-top:8px;text-align:center;">Uses Google Imagen to create a unique background</p>
-            </div>
+              <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn btn-primary" data-action="start-quiz" style="flex:1">Take the Quiz Again</button>
+                <button class="btn btn-secondary" data-action="generate-random-bg" style="flex:1">Surprise Me</button>
+              </div>
+              <button class="btn btn-secondary" data-action="clear-ai-bg" style="margin-top:8px;">Remove Background</button>
+            ` : `
+              <p style="text-align:center;color:var(--text-light);margin-bottom:16px;">
+                Take a quick style quiz to generate your personal mahjong background!
+              </p>
+              <button class="btn btn-primary" data-action="start-quiz">
+                Take the Style Quiz
+              </button>
+              <button class="btn btn-secondary" data-action="generate-random-bg" style="margin-top:8px;">
+                Just Surprise Me
+              </button>
+            `}
+
             <button class="btn btn-secondary" data-action="close-theme-picker" style="margin-top:12px;">Close</button>
           </div>
         </div>
@@ -2231,6 +1809,7 @@
 
         ${state.editingTileIndex !== null ? renderTilePicker() : ''}
         ${state.themePickerOpen ? renderThemePicker() : ''}
+        ${renderQuiz()}
         ${state.toastMsg ? `<div class="toast">${state.toastMsg}</div>` : ''}
 
         <input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none">
@@ -2280,7 +1859,7 @@
             <div style="display: flex; gap: 8px; margin-top: 8px;">
               <button class="btn btn-secondary btn-small" data-action="add-tile" style="flex:1">+ Add Tile</button>
               <button class="btn btn-secondary btn-small" data-action="upload" style="flex:1">New Photo</button>
-              <button class="btn btn-secondary btn-small" data-action="new-hand" style="flex:0">✕</button>
+              <button class="btn btn-secondary btn-small" data-action="new-hand" style="flex:0">&#10005;</button>
             </div>
           </div>
         `;
@@ -2293,8 +1872,8 @@
             <div class="preview-container">
               <img src="${state.handPreview}" alt="Hand photo" style="transform: rotate(${state.handRotation}deg)">
               <div class="preview-overlay">
-                <button class="preview-btn" data-action="rotate" title="Rotate">↻</button>
-                <button class="preview-btn" data-action="clear-image" title="Remove">✕</button>
+                <button class="preview-btn" data-action="rotate" title="Rotate">&#8635;</button>
+                <button class="preview-btn" data-action="clear-image" title="Remove">&#10005;</button>
               </div>
             </div>
             <button class="btn btn-primary" data-action="recognize">
@@ -2618,7 +2197,7 @@
 
     // ─── Init ───
     setupEvents();
-    applyTheme(state.theme);
+    applyTheme();
     render();
   </script>
 </body>
