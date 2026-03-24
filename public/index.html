@@ -1342,23 +1342,23 @@
     // ─── Quiz prompt generation ───
     function buildQuizPrompt(answers) {
       const vibes = {
-        'garden': 'lush garden with pink peonies, soft roses, and trailing ivy on linen',
-        'beach': 'tropical beach scene with turquoise water, palm fronds, and coral shells on sand',
-        'evening': 'elegant evening scene with deep jewel tones, gold filigree, and candlelight on velvet',
-        'brunch': 'bright sunny brunch table with lemons, fresh herbs, and wildflowers on white cotton'
+        'garden': 'lush garden scene with pink peonies, soft roses, and trailing ivy',
+        'beach': 'tropical scene with turquoise water, palm fronds, and coral shells',
+        'evening': 'elegant evening atmosphere with deep jewel tones, gold filigree, and candlelight',
+        'brunch': 'bright sunny morning scene with lemons, fresh herbs, and wildflowers'
       };
 
       const patterns = {
-        'geometric': 'with geometric lattice and tile patterns woven throughout',
+        'geometric': 'with geometric lattice and ornamental patterns woven throughout',
         'botanical': 'with detailed botanical illustrations of leaves and flowers',
         'chinoiserie': 'in chinoiserie style with ornate frames, dragons, and traditional motifs',
         'minimal': 'with clean minimal composition and lots of negative space'
       };
 
-      const tables = {
+      const accents = {
         'bamboo': 'incorporating natural bamboo, jade stones, and zen garden elements',
-        'flowers': 'surrounded by abundant fresh flower arrangements in full bloom',
-        'candles': 'with warm candlelight, gold leaf accents, and rich textures',
+        'flowers': 'with abundant fresh flower arrangements and blossoms in full bloom',
+        'candles': 'with warm candlelight glow, gold leaf accents, and rich textures',
         'coastal': 'with seashells, smooth stones, driftwood, and ocean-inspired elements'
       };
 
@@ -1369,7 +1369,7 @@
         'gold': 'in a palette of warm amber, golden yellow, and soft peach'
       };
 
-      return `Beautiful decorative background for a mahjong game app. ${vibes[answers.vibe] || ''} ${patterns[answers.pattern] || ''} ${tables[answers.table] || ''} ${colors[answers.color] || ''}. Elegant, modern, feminine aesthetic. No text. No tiles. Soft watercolor style. Seamless pattern suitable for a phone wallpaper.`;
+      return `Beautiful decorative wallpaper background for a mahjong game app. ${vibes[answers.vibe] || ''} ${patterns[answers.pattern] || ''} ${accents[answers.table] || ''} ${colors[answers.color] || ''}. Elegant, modern, feminine aesthetic. Abstract decorative pattern — no food, no plates, no drinks, no cutlery, no place settings, no people. Soft watercolor style. Seamless pattern suitable as a phone wallpaper.`;
     }
 
     async function generateQuizBackground(answers) {
@@ -1395,11 +1395,11 @@
 
     async function generateRandomBackground() {
       const prompts = [
-        'Elegant chinoiserie wallpaper with pink peonies, teal leaves, and gold accents on cream silk. No text. Watercolor style.',
-        'Tropical botanical pattern with monstera leaves, hibiscus flowers, and hummingbirds in coral and teal. No text. Seamless.',
-        'Japanese garden scene with cherry blossoms, koi fish, and stone lanterns in soft pink and sage green. No text. Watercolor.',
-        'Mediterranean lemon grove with blue tiles, terracotta, and flowering vines. Bright and cheerful. No text. Watercolor.',
-        'Art deco pattern with geometric shapes, gold lines, and jade green accents on navy blue. No text. Elegant.',
+        'Elegant chinoiserie wallpaper with pink peonies, teal leaves, and gold accents on cream silk. Abstract decorative pattern — no food, no plates, no drinks, no people. Watercolor style. Phone wallpaper.',
+        'Tropical botanical pattern with monstera leaves, hibiscus flowers, and hummingbirds in coral and teal. Abstract decorative — no food, no plates, no drinks, no people. Seamless phone wallpaper.',
+        'Japanese garden scene with cherry blossoms, koi fish, and stone lanterns in soft pink and sage green. Abstract decorative — no food, no plates, no drinks, no people. Watercolor phone wallpaper.',
+        'Mediterranean scene with blue mosaic tiles, terracotta arches, and flowering bougainvillea vines. Abstract decorative — no food, no plates, no drinks, no people. Watercolor phone wallpaper.',
+        'Art deco pattern with geometric shapes, gold lines, and jade green accents on navy blue. Abstract decorative — no food, no plates, no drinks, no people. Elegant phone wallpaper.',
       ];
       const prompt = prompts[Math.floor(Math.random() * prompts.length)];
       setState({ themePickerOpen: false, quizOpen: true, quizStep: 5, quizAnswers: {} });
@@ -1421,6 +1421,39 @@
       } catch (err) {
         setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + err.message });
       }
+    }
+
+    async function handleSetupPhoto(file) {
+      if (!file) return;
+      setState({ themePickerOpen: false, quizOpen: true, quizStep: 5, quizAnswers: {} });
+
+      try {
+        const base64 = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        const res = await fetch('/api/generate-bg', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ referenceImage: base64 })
+        });
+        const data = await res.json();
+        if (data.image) {
+          localStorage.setItem('mj-ai-bg', data.image);
+          setState({ aiBackground: data.image, quizStep: 6 });
+          applyTheme();
+        } else {
+          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + (data.error || 'Unknown error') });
+        }
+      } catch (err) {
+        setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + err.message });
+      }
+      // Reset file input so the same photo can be re-selected
+      const input = document.getElementById('setupPhotoInput');
+      if (input) input.value = '';
     }
 
     function toast(msg) {
@@ -1763,12 +1796,18 @@
           case 'clear-ai-bg':
             clearAiBackground();
             break;
-        }
+
+          case 'snap-setup':
+            document.getElementById('setupPhotoInput')?.click();
+            break;
       });
 
       app.addEventListener('change', e => {
         if (e.target.id === 'fileInput') {
           handleImage(e.target.files[0]);
+        }
+        if (e.target.id === 'setupPhotoInput') {
+          handleSetupPhoto(e.target.files[0]);
         }
       });
 
@@ -1823,7 +1862,7 @@
         },
         {
           step: 3,
-          text: 'Your ideal mahjong table has...',
+          text: 'What sets the mood?',
           key: 'table',
           options: [
             { emoji: '\uD83C\uDF8B', label: 'Bamboo & jade', value: 'bamboo' },
@@ -1930,9 +1969,12 @@
                 <img src="${state.aiBackground}" style="width:100%;border-radius:12px;max-height:200px;object-fit:cover;" />
               </div>
               <div style="display:flex;gap:8px;margin-top:12px;">
-                <button class="btn btn-primary" data-action="start-quiz" style="flex:1">Take the Quiz Again</button>
+                <button class="btn btn-primary" data-action="start-quiz" style="flex:1">Style Quiz</button>
                 <button class="btn btn-secondary" data-action="generate-random-bg" style="flex:1">Surprise Me</button>
               </div>
+              <button class="btn btn-secondary" data-action="snap-setup" style="margin-top:8px;">
+                📸 Snap Your Setup
+              </button>
               <button class="btn btn-secondary" data-action="clear-ai-bg" style="margin-top:8px;">Remove Background</button>
             ` : `
               <p style="text-align:center;color:var(--text-light);margin-bottom:16px;">
@@ -1944,6 +1986,12 @@
               <button class="btn btn-secondary" data-action="generate-random-bg" style="margin-top:8px;">
                 Just Surprise Me
               </button>
+              <button class="btn btn-secondary" data-action="snap-setup" style="margin-top:8px;">
+                📸 Snap Your Setup
+              </button>
+              <p style="text-align:center;color:var(--text-light);font-size:11px;margin-top:6px;">
+                Take a photo of your mahjong setup and we'll create a background inspired by it
+              </p>
             `}
 
             <button class="btn btn-secondary" data-action="close-theme-picker" style="margin-top:12px;">Close</button>
@@ -2010,6 +2058,7 @@
         ${state.toastMsg ? `<div class="toast">${state.toastMsg}</div>` : ''}
 
         <input type="file" id="fileInput" accept="image/*" capture="environment" style="display:none">
+        <input type="file" id="setupPhotoInput" accept="image/*" capture="environment" style="display:none">
       `;
     }
 
