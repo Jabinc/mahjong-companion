@@ -42,8 +42,15 @@ export default async function handler(req, res) {
 
         if (!response.ok) {
           const errMsg = data.error?.message || `HTTP ${response.status}`;
+          const errStatus = data.error?.status || '';
           errors.push({ model, status: response.status, error: errMsg });
           console.error(`Model ${model} failed (${response.status}):`, errMsg);
+
+          // Stop immediately on quota/auth errors — other models share the same limits
+          if (response.status === 429 || response.status === 403 || response.status === 401
+              || errStatus === 'RESOURCE_EXHAUSTED' || errStatus === 'PERMISSION_DENIED') {
+            break;
+          }
           continue;
         }
 
@@ -53,7 +60,7 @@ export default async function handler(req, res) {
           return res.json({ image: `data:image/png;base64,${imageBase64}` });
         }
 
-        // Model returned 200 but no image — maybe safety filter or text-only response
+        // Model returned 200 but no image
         const textPart = data.candidates?.[0]?.content?.parts?.find(p => p.text);
         const blockReason = data.candidates?.[0]?.finishReason;
         errors.push({
@@ -69,9 +76,8 @@ export default async function handler(req, res) {
       }
     }
 
-    // Return all errors so we can debug
     const primaryError = errors[0]?.error || 'All models failed';
-    res.status(500).json({ error: `Background generation failed: ${primaryError}`, allErrors: errors });
+    res.status(500).json({ error: primaryError, allErrors: errors });
   } catch (err) {
     console.error('Generate-bg error:', err);
     res.status(500).json({ error: err.message });
