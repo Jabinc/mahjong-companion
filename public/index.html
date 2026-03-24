@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Crack Bam Dot</title>
+  <title>Crak, Dot, Bam</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
@@ -39,6 +39,15 @@
       min-height: 100dvh;
       -webkit-font-smoothing: antialiased;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    /* When AI background is active, boost glass effects */
+    body.has-ai-bg {
+      --card-bg: rgba(255,255,255,0.72);
+      --card-border: rgba(255,255,255,0.45);
+      --glass-blur: 20px;
+      --glass-bg: rgba(255,255,255,0.65);
+      --glass-border: rgba(255,255,255,0.35);
     }
 
     .theme-bg {
@@ -77,6 +86,11 @@
       font-weight: 700;
       color: var(--pink-dark);
       letter-spacing: -0.5px;
+      text-shadow: 0 1px 8px rgba(255,255,255,0.6);
+    }
+
+    .has-ai-bg .header h1 {
+      text-shadow: 0 1px 12px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4);
     }
 
     .header h1 span { font-size: 32px; }
@@ -88,15 +102,21 @@
       font-weight: 500;
     }
 
+    .has-ai-bg .header p {
+      text-shadow: 0 1px 6px rgba(255,255,255,0.7);
+    }
+
     /* Navigation tabs */
     .nav-tabs {
       display: flex;
       gap: 6px;
-      background: rgba(255,255,255,0.5);
+      background: var(--glass-bg, rgba(255,255,255,0.5));
       border-radius: 16px;
       padding: 4px;
       margin-bottom: 20px;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(var(--glass-blur, 10px));
+      -webkit-backdrop-filter: blur(var(--glass-blur, 10px));
+      border: 1px solid var(--glass-border, rgba(255,255,255,0.3));
     }
 
     .nav-tab {
@@ -115,9 +135,11 @@
     }
 
     .nav-tab.active {
-      background: white;
+      background: rgba(255,255,255,0.85);
       color: var(--pink-dark);
       box-shadow: 0 2px 8px var(--shadow);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .nav-tab .tab-icon { font-size: 18px; display: flex; justify-content: center; margin-bottom: 2px; }
@@ -128,9 +150,10 @@
       border-radius: 20px;
       padding: 20px;
       margin-bottom: 16px;
-      box-shadow: 0 4px 20px var(--shadow);
+      box-shadow: 0 4px 20px var(--shadow), 0 0 0 0.5px rgba(255,255,255,0.3);
       border: 1px solid var(--card-border, rgba(255,255,255,0.8));
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(var(--glass-blur, 8px));
+      -webkit-backdrop-filter: blur(var(--glass-blur, 8px));
     }
 
     .card-title {
@@ -158,7 +181,9 @@
       text-align: center;
       cursor: pointer;
       transition: all 0.25s ease;
-      background: var(--warm-white);
+      background: rgba(255,253,247,0.7);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
 
     .upload-zone:hover, .upload-zone.dragover {
@@ -313,13 +338,15 @@
     }
 
     .btn-secondary {
-      background: var(--warm-white);
+      background: rgba(255,253,247,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       color: var(--pink-dark);
-      border: 2px solid var(--pink-light);
+      border: 1.5px solid rgba(255,255,255,0.5);
     }
 
     .btn-secondary:hover {
-      background: var(--pink-light);
+      background: rgba(255,255,255,0.85);
     }
 
     .btn-small {
@@ -341,8 +368,10 @@
       flex: 1;
       padding: 8px 4px;
       border-radius: 10px;
-      border: 2px solid var(--pink-light);
-      background: white;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       font-family: 'Quicksand', sans-serif;
       font-size: 11px;
       font-weight: 600;
@@ -395,7 +424,9 @@
     }
 
     .advice-pass {
-      background: #fff5f5;
+      background: rgba(255,245,245,0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       border-radius: 12px;
       padding: 14px;
       margin-bottom: 12px;
@@ -403,7 +434,9 @@
     }
 
     .advice-keep {
-      background: #f0faf5;
+      background: rgba(240,250,245,0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       border-radius: 12px;
       padding: 14px;
       margin-bottom: 12px;
@@ -429,7 +462,9 @@
 
     /* Tips */
     .tip-card {
-      background: var(--lavender-light);
+      background: rgba(232,223,245,0.7);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       border-radius: 12px;
       padding: 12px 14px;
       margin-top: 8px;
@@ -448,8 +483,10 @@
 
     /* Hand matches */
     .hand-match {
-      background: white;
-      border: 1.5px solid var(--pink-light);
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1.5px solid rgba(255,255,255,0.5);
       border-radius: 14px;
       padding: 14px;
       margin-bottom: 10px;
@@ -560,7 +597,9 @@
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: var(--text);
+      background: rgba(74, 63, 85, 0.85);
+      backdrop-filter: blur(20px) saturate(1.5);
+      -webkit-backdrop-filter: blur(20px) saturate(1.5);
       color: white;
       padding: 12px 24px;
       border-radius: 14px;
@@ -570,6 +609,7 @@
       transition: transform 0.3s ease;
       white-space: nowrap;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.15);
     }
 
     .toast.show { transform: translateX(-50%) translateY(0); }
@@ -611,7 +651,9 @@
     /* Target hand cards */
     .target-hand {
       padding: 12px 14px;
-      background: var(--warm-white);
+      background: rgba(255,253,247,0.7);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       border-radius: 14px;
       margin-bottom: 8px;
       cursor: pointer;
@@ -621,12 +663,12 @@
 
     .target-hand:hover {
       border-color: var(--pink-light);
-      background: white;
+      background: rgba(255,255,255,0.85);
     }
 
     .target-hand.active {
       border-color: var(--pink-dark);
-      background: white;
+      background: rgba(255,255,255,0.9);
       box-shadow: 0 2px 12px var(--shadow);
     }
 
@@ -683,8 +725,10 @@
     }
 
     .year-pill {
-      border: 2px solid var(--pink-light);
-      background: white;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border-radius: 20px;
       padding: 6px 16px;
       font-family: 'Quicksand', sans-serif;
@@ -726,7 +770,9 @@
     }
 
     .tile-picker-sheet {
-      background: white;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(40px) saturate(1.8);
+      -webkit-backdrop-filter: blur(40px) saturate(1.8);
       border-radius: 24px 24px 0 0;
       padding: 20px 16px 40px;
       width: 100%;
@@ -735,6 +781,7 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
+      border-top: 1px solid rgba(255,255,255,0.6);
     }
 
     .tile-picker-sheet h3 {
@@ -779,8 +826,10 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      border: 2px solid var(--pink-light);
-      background: var(--card-bg, rgba(255,255,255,0.92));
+      border: 1.5px solid var(--glass-border, var(--pink-light));
+      background: var(--glass-bg, rgba(255,255,255,0.85));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -790,6 +839,7 @@
       right: 0;
       top: 50%;
       transform: translateY(-50%);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
     .theme-picker-btn:hover {
@@ -820,7 +870,9 @@
     }
 
     .theme-sheet {
-      background: white;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(40px) saturate(1.8);
+      -webkit-backdrop-filter: blur(40px) saturate(1.8);
       border-radius: 24px 24px 0 0;
       padding: 24px 20px 40px;
       width: 100%;
@@ -830,6 +882,7 @@
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
       animation: slideUp 0.3s ease;
+      border-top: 1px solid rgba(255,255,255,0.6);
     }
 
     @keyframes slideUp {
@@ -860,7 +913,9 @@
     }
 
     .quiz-sheet {
-      background: white;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(40px) saturate(1.8);
+      -webkit-backdrop-filter: blur(40px) saturate(1.8);
       border-radius: 24px 24px 0 0;
       padding: 24px 20px 40px;
       width: 100%;
@@ -870,6 +925,7 @@
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
       animation: slideUp 0.3s ease;
+      border-top: 1px solid rgba(255,255,255,0.6);
     }
 
     .quiz-progress {
@@ -905,8 +961,10 @@
     .quiz-option {
       padding: 16px 12px;
       border-radius: 16px;
-      border: 2px solid #f0e6ea;
-      background: white;
+      border: 1.5px solid rgba(240,230,234,0.7);
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       cursor: pointer;
       text-align: center;
       transition: all 0.2s;
@@ -1103,15 +1161,25 @@
     };
 
     function logoSvg() {
-      return `<svg width="72" height="36" viewBox="0 0 72 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="1" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
-        <rect x="25" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
-        <rect x="49" y="1" width="20" height="34" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
-        <text x="11" y="23" text-anchor="middle" font-family="serif" font-size="18" font-weight="bold" fill="#e05c6c">\u4E07</text>
-        <line x1="33" y1="8" x2="33" y2="28" stroke="#3d9970" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="37" y1="8" x2="37" y2="28" stroke="#3d9970" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="59" cy="18" r="6" fill="#5b8ed4"/>
-        <circle cx="59" cy="18" r="3" fill="#fff"/>
+      return `<svg width="78" height="38" viewBox="0 0 78 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Crak tile: 中 character -->
+        <rect x="1" y="1" width="22" height="36" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
+        <text x="12" y="25" text-anchor="middle" font-family="serif" font-size="20" font-weight="bold" fill="#e05c6c">\u4E2D</text>
+        <!-- Dot tile: floral circle -->
+        <rect x="27" y="1" width="22" height="36" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
+        <circle cx="38" cy="19" r="7" fill="none" stroke="#5b8ed4" stroke-width="1.5"/>
+        <circle cx="38" cy="19" r="3" fill="#5b8ed4"/>
+        <circle cx="38" cy="12" r="1.5" fill="#5b8ed4" opacity="0.5"/>
+        <circle cx="38" cy="26" r="1.5" fill="#5b8ed4" opacity="0.5"/>
+        <circle cx="31.5" cy="19" r="1.5" fill="#5b8ed4" opacity="0.5"/>
+        <circle cx="44.5" cy="19" r="1.5" fill="#5b8ed4" opacity="0.5"/>
+        <!-- Bam tile: bamboo stalks with leaves -->
+        <rect x="53" y="1" width="22" height="36" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
+        <line x1="61" y1="8" x2="61" y2="30" stroke="#3d9970" stroke-width="2" stroke-linecap="round"/>
+        <line x1="67" y1="8" x2="67" y2="30" stroke="#3d9970" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="59" cy="12" rx="3" ry="2" fill="#3d9970" opacity="0.4" transform="rotate(-30 59 12)"/>
+        <ellipse cx="69" cy="14" rx="3" ry="2" fill="#3d9970" opacity="0.4" transform="rotate(30 69 14)"/>
+        <ellipse cx="59" cy="24" rx="3" ry="2" fill="#3d9970" opacity="0.4" transform="rotate(-30 59 24)"/>
       </svg>`;
     }
 
@@ -1127,11 +1195,108 @@
         if (state.aiBackground) {
           bgEl.classList.add('ai-bg');
           bgEl.style.backgroundImage = `url(${state.aiBackground})`;
+          document.body.classList.add('has-ai-bg');
+          extractAndApplyPalette(state.aiBackground);
         } else {
           bgEl.classList.remove('ai-bg');
           bgEl.style.backgroundImage = '';
+          document.body.classList.remove('has-ai-bg');
+          resetPalette();
         }
       }
+    }
+
+    function extractAndApplyPalette(imgSrc) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const size = 50; // sample small
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, size, size);
+        const data = ctx.getImageData(0, 0, size, size).data;
+
+        // Collect color samples
+        let rSum = 0, gSum = 0, bSum = 0, count = 0;
+        let darkR = 0, darkG = 0, darkB = 0, darkCount = 0;
+        let vibR = 0, vibG = 0, vibB = 0, vibCount = 0;
+
+        for (let i = 0; i < data.length; i += 16) { // sample every 4th pixel
+          const r = data[i], g = data[i+1], b = data[i+2];
+          rSum += r; gSum += g; bSum += b; count++;
+
+          const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+          if (lum < 100) { darkR += r; darkG += g; darkB += b; darkCount++; }
+
+          // Saturation check for vibrant colors
+          const max = Math.max(r, g, b), min = Math.min(r, g, b);
+          const sat = max === 0 ? 0 : (max - min) / max;
+          if (sat > 0.3 && lum > 60 && lum < 200) {
+            vibR += r; vibG += g; vibB += b; vibCount++;
+          }
+        }
+
+        // Average color
+        const avgR = Math.round(rSum / count);
+        const avgG = Math.round(gSum / count);
+        const avgB = Math.round(bSum / count);
+
+        // Vibrant accent or fallback to average
+        let accentR, accentG, accentB;
+        if (vibCount > 5) {
+          accentR = Math.round(vibR / vibCount);
+          accentG = Math.round(vibG / vibCount);
+          accentB = Math.round(vibB / vibCount);
+        } else {
+          accentR = avgR; accentG = avgG; accentB = avgB;
+        }
+
+        // Derive palette
+        const root = document.documentElement;
+        // Accent color (used for pink-dark, buttons, titles)
+        const accentHSL = rgbToHSL(accentR, accentG, accentB);
+        const accent = `hsl(${accentHSL.h}, ${Math.min(accentHSL.s + 10, 70)}%, ${Math.min(accentHSL.l, 42)}%)`;
+        const accentLight = `hsl(${accentHSL.h}, ${Math.min(accentHSL.s + 5, 60)}%, 88%)`;
+        const accentMid = `hsl(${accentHSL.h}, ${Math.min(accentHSL.s, 55)}%, 62%)`;
+
+        root.style.setProperty('--pink-dark', accent);
+        root.style.setProperty('--pink', accentMid);
+        root.style.setProperty('--pink-light', accentLight);
+
+        // Gradient button uses accent
+        root.style.setProperty('--coral', `hsl(${(accentHSL.h + 15) % 360}, ${Math.min(accentHSL.s + 10, 65)}%, 55%)`);
+      };
+      img.src = imgSrc;
+    }
+
+    function rgbToHSL(r, g, b) {
+      r /= 255; g /= 255; b /= 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0;
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+          case g: h = ((b - r) / d + 2) / 6; break;
+          case b: h = ((r - g) / d + 4) / 6; break;
+        }
+      }
+
+      return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+    }
+
+    function resetPalette() {
+      const root = document.documentElement;
+      root.style.removeProperty('--pink-dark');
+      root.style.removeProperty('--pink');
+      root.style.removeProperty('--pink-light');
+      root.style.removeProperty('--coral');
     }
 
     function clearAiBackground() {
@@ -1760,8 +1925,8 @@
       const app = document.getElementById('app');
       app.innerHTML = `
         <div class="header">
-          <h1><span>${logoSvg()}</span> Crack Bam Dot</h1>
-          <p>Your friendly helper for American Mahjong</p>
+          <h1><span>${logoSvg()}</span> Crak, Dot, Bam</h1>
+          <p>Your mahjong training companion</p>
           <button class="theme-picker-btn" data-action="open-theme-picker" title="Change theme">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"/>

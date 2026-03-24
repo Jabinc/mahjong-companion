@@ -19,51 +19,61 @@ export default async function handler(req, res) {
       return imgPart?.inlineData?.data;
     };
 
-    // Try models in order — current Gemini image generation model names
+    // Gemini image generation models (free tier compatible)
     const models = [
       'gemini-2.5-flash-image',
       'gemini-3.1-flash-image-preview',
       'gemini-3-pro-image-preview',
-      'imagen-4.0-generate-001',
     ];
 
-    let lastError = null;
+    const errors = [];
 
     for (const model of models) {
       try {
-        const isImagen = model.startsWith('imagen');
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:${isImagen ? 'predict' : 'generateContent'}?key=${apiKey}`;
-        const body = isImagen
-          ? { instances: [{ prompt }], parameters: { sampleCount: 1, aspectRatio: '9:16', safetyFilterLevel: 'block_some' } }
-          : geminiBody;
-        const extract = isImagen
-          ? (data) => data.predictions?.[0]?.bytesBase64Encoded
-          : geminiExtract;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          body: JSON.stringify(geminiBody)
         });
 
         const data = await response.json();
-        const imageBase64 = extract(data);
+
+        if (!response.ok) {
+          const errMsg = data.error?.message || `HTTP ${response.status}`;
+          errors.push({ model, status: response.status, error: errMsg });
+          console.error(`Model ${model} failed (${response.status}):`, errMsg);
+          continue;
+        }
+
+        const imageBase64 = geminiExtract(data);
 
         if (imageBase64) {
           return res.json({ image: `data:image/png;base64,${imageBase64}` });
         }
 
-        lastError = { model, status: response.status, error: data.error?.message || 'No image returned' };
-        console.error(`Model ${model} failed:`, data.error?.message || 'No image');
+        // Model returned 200 but no image — maybe safety filter or text-only response
+        const textPart = data.candidates?.[0]?.content?.parts?.find(p => p.text);
+        const blockReason = data.candidates?.[0]?.finishReason;
+        errors.push({
+          model,
+          status: response.status,
+          error: `No image in response (finishReason: ${blockReason})`,
+          text: textPart?.text?.slice(0, 200)
+        });
+        console.error(`Model ${model}: no image returned, finishReason=${blockReason}`);
       } catch (fetchErr) {
-        lastError = { model, error: fetchErr.message };
+        errors.push({ model, error: fetchErr.message });
         console.error(`Model ${model} fetch error:`, fetchErr.message);
       }
     }
 
-    res.status(500).json({ error: 'Image generation failed', debug: lastError });
+    // Return all errors so we can debug
+    const primaryError = errors[0]?.error || 'All models failed';
+    res.status(500).json({ error: `Background generation failed: ${primaryError}`, allErrors: errors });
   } catch (err) {
-    console.error('Imagen error:', err);
+    console.error('Generate-bg error:', err);
     res.status(500).json({ error: err.message });
   }
 }
