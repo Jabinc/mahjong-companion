@@ -41,13 +41,13 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* When AI background is active, boost glass effects */
+    /* When AI background is active, boost glass effects for readability */
     body.has-ai-bg {
-      --card-bg: rgba(255,255,255,0.72);
-      --card-border: rgba(255,255,255,0.45);
-      --glass-blur: 20px;
-      --glass-bg: rgba(255,255,255,0.65);
-      --glass-border: rgba(255,255,255,0.35);
+      --card-bg: rgba(255,255,255,0.88);
+      --card-border: rgba(255,255,255,0.6);
+      --glass-blur: 24px;
+      --glass-bg: rgba(255,255,255,0.82);
+      --glass-border: rgba(255,255,255,0.5);
     }
 
     .theme-bg {
@@ -87,13 +87,22 @@
       color: var(--pink-dark);
       letter-spacing: -0.5px;
       text-shadow: 0 1px 8px rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
+
+    .logo-crak { color: #e8879e; }
+    .logo-dot { color: #6db8ad; }
+    .logo-bam { color: #6ab889; }
 
     .has-ai-bg .header h1 {
-      text-shadow: 0 1px 12px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.4);
+      text-shadow: 0 1px 12px rgba(255,255,255,0.9), 0 0 24px rgba(255,255,255,0.5);
     }
 
-    .header h1 span { font-size: 32px; }
+    .header h1 > span:first-child { font-size: 32px; display: flex; }
 
     .header p {
       font-size: 13px;
@@ -1161,25 +1170,31 @@
     };
 
     function logoSvg() {
-      return `<svg width="78" height="38" viewBox="0 0 78 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Crak tile: 中 character -->
-        <rect x="1" y="1" width="22" height="36" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
-        <text x="12" y="25" text-anchor="middle" font-family="serif" font-size="20" font-weight="bold" fill="#e05c6c">\u4E2D</text>
-        <!-- Dot tile: floral circle -->
-        <rect x="27" y="1" width="22" height="36" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
-        <circle cx="38" cy="19" r="7" fill="none" stroke="#5b8ed4" stroke-width="1.5"/>
-        <circle cx="38" cy="19" r="3" fill="#5b8ed4"/>
-        <circle cx="38" cy="12" r="1.5" fill="#5b8ed4" opacity="0.5"/>
-        <circle cx="38" cy="26" r="1.5" fill="#5b8ed4" opacity="0.5"/>
-        <circle cx="31.5" cy="19" r="1.5" fill="#5b8ed4" opacity="0.5"/>
-        <circle cx="44.5" cy="19" r="1.5" fill="#5b8ed4" opacity="0.5"/>
-        <!-- Bam tile: bamboo stalks with leaves -->
-        <rect x="53" y="1" width="22" height="36" rx="4" fill="#fff" stroke="#d4cfc6" stroke-width="1.5"/>
-        <line x1="61" y1="8" x2="61" y2="30" stroke="#3d9970" stroke-width="2" stroke-linecap="round"/>
-        <line x1="67" y1="8" x2="67" y2="30" stroke="#3d9970" stroke-width="2" stroke-linecap="round"/>
-        <ellipse cx="59" cy="12" rx="3" ry="2" fill="#3d9970" opacity="0.4" transform="rotate(-30 59 12)"/>
-        <ellipse cx="69" cy="14" rx="3" ry="2" fill="#3d9970" opacity="0.4" transform="rotate(30 69 14)"/>
-        <ellipse cx="59" cy="24" rx="3" ry="2" fill="#3d9970" opacity="0.4" transform="rotate(-30 59 24)"/>
+      return `<svg width="96" height="42" viewBox="0 0 96 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Crak tile -->
+        <rect x="1" y="1" width="28" height="40" rx="5" fill="#faf8f2" stroke="#8dbcb4" stroke-width="1.8"/>
+        <rect x="4" y="4" width="22" height="34" rx="3" fill="none" stroke="#8dbcb4" stroke-width="0.5" opacity="0.4"/>
+        <text x="15" y="28" text-anchor="middle" font-family="serif" font-size="22" font-weight="bold" fill="#e8879e">\u4E2D</text>
+        <!-- Dot tile -->
+        <rect x="33" y="1" width="28" height="40" rx="5" fill="#faf8f2" stroke="#8dbcb4" stroke-width="1.8"/>
+        <circle cx="47" cy="21" r="4" fill="#e8a34e" opacity="0.8"/>
+        <circle cx="47" cy="21" r="6" fill="none" stroke="#e8a34e" stroke-width="0.5" opacity="0.3"/>
+        <circle cx="47" cy="13" r="2.2" fill="#e890a0"/>
+        <circle cx="53" cy="16" r="2.2" fill="#8bb4d9"/>
+        <circle cx="53" cy="26" r="2.2" fill="#b09ad4"/>
+        <circle cx="47" cy="29" r="2.2" fill="#e890a0"/>
+        <circle cx="41" cy="26" r="2.2" fill="#7bc4b3"/>
+        <circle cx="41" cy="16" r="2.2" fill="#d4a0d8"/>
+        <!-- Bam tile -->
+        <rect x="65" y="1" width="28" height="40" rx="5" fill="#faf8f2" stroke="#8dbcb4" stroke-width="1.8"/>
+        <line x1="76" y1="10" x2="76" y2="34" stroke="#6ab889" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="82" y1="10" x2="82" y2="34" stroke="#6ab889" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="73" cy="14" rx="4" ry="2" fill="#6ab889" opacity="0.5" transform="rotate(-35 73 14)"/>
+        <ellipse cx="85" cy="16" rx="4" ry="2" fill="#6ab889" opacity="0.5" transform="rotate(35 85 16)"/>
+        <ellipse cx="73" cy="26" rx="4" ry="2" fill="#6ab889" opacity="0.5" transform="rotate(-35 73 26)"/>
+        <ellipse cx="85" cy="28" rx="4" ry="2" fill="#6ab889" opacity="0.5" transform="rotate(35 85 28)"/>
+        <circle cx="72" cy="10" r="2" fill="#e890a0" opacity="0.7"/>
+        <circle cx="86" cy="22" r="2" fill="#e890a0" opacity="0.7"/>
       </svg>`;
     }
 
@@ -1354,8 +1369,9 @@
           setState({ aiBackground: data.image, quizStep: 6 });
           applyTheme();
         } else {
-          const debug = data.debug ? JSON.stringify(data.debug) : (data.error || 'Unknown error');
-          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + debug });
+          const errDetail = data.allErrors ? data.allErrors.map(e => `${e.model}: ${e.error}`).join(' | ') : (data.error || 'Unknown error');
+          console.error('BG gen errors:', data.allErrors || data);
+          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + errDetail });
         }
       } catch (err) {
         setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + err.message });
@@ -1385,10 +1401,12 @@
           setState({ aiBackground: data.image, quizStep: 6 });
           applyTheme();
         } else {
-          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed.' });
+          const errDetail = data.allErrors ? data.allErrors.map(e => `${e.model}: ${e.error}`).join(' | ') : (data.error || 'Unknown error');
+          console.error('BG gen errors:', data.allErrors || data);
+          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + errDetail });
         }
       } catch (err) {
-        setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed.' });
+        setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + err.message });
       }
     }
 
@@ -1925,8 +1943,8 @@
       const app = document.getElementById('app');
       app.innerHTML = `
         <div class="header">
-          <h1><span>${logoSvg()}</span> Crak, Dot, Bam</h1>
-          <p>Your mahjong training companion</p>
+          <h1><span>${logoSvg()}</span> <span class="logo-crak">Crak,</span> <span class="logo-dot">Dot,</span> <span class="logo-bam">Bam</span></h1>
+          <p>mahjong training app</p>
           <button class="theme-picker-btn" data-action="open-theme-picker" title="Change theme">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--pink-dark)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"/>
