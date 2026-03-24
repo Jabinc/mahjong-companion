@@ -1,3 +1,5 @@
+import { GoogleAuth } from 'google-auth-library';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
@@ -5,38 +7,54 @@ export default async function handler(req, res) {
   if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
 
   try {
-    const apiKey = process.env.GOOGLE_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: 'Google API key not configured' });
+    const credJson = process.env.GOOGLE_CREDENTIALS_JSON;
+    if (!credJson) return res.status(500).json({ error: 'Google credentials not configured' });
 
-    const model = 'gemini-2.5-flash-image';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const credentials = JSON.parse(credJson);
+    const projectId = credentials.project_id;
+
+    // Get access token via service account
+    const auth = new GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    });
+    const client = await auth.getClient();
+    const { token } = await client.getAccessToken();
+
+    const model = 'imagen-4.0-generate-001';
+    const location = 'us-central1';
+    const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:predict`;
 
     const response = await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: `Generate an image: ${prompt}` }] }],
-        generationConfig: { responseModalities: ['IMAGE', 'TEXT'] }
-      })
+        instances: [{ prompt }],
+        parameters: {
+          sampleCount: 1,
+          aspectRatio: '9:16',
+          safetyFilterLevel: 'block_medium_and_above',
+        },
+      }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      const errMsg = data.error?.message || `HTTP ${response.status}`;
-      console.error(`Gemini image gen failed (${response.status}):`, errMsg);
+      const errMsg = data.error?.message || JSON.stringify(data.error) || `HTTP ${response.status}`;
+      console.error(`Imagen generation failed (${response.status}):`, errMsg);
       return res.status(response.status).json({ error: errMsg });
     }
 
-    const parts = data.candidates?.[0]?.content?.parts || [];
-    const imgPart = parts.find(p => p.inlineData);
-
-    if (imgPart?.inlineData?.data) {
-      return res.json({ image: `data:image/png;base64,${imgPart.inlineData.data}` });
+    const imageBase64 = data.predictions?.[0]?.bytesBase64Encoded;
+    if (imageBase64) {
+      return res.json({ image: `data:image/png;base64,${imageBase64}` });
     }
 
-    const reason = data.candidates?.[0]?.finishReason || 'unknown';
-    res.status(500).json({ error: `No image generated (reason: ${reason})` });
+    res.status(500).json({ error: 'No image returned from Imagen' });
   } catch (err) {
     console.error('Generate-bg error:', err);
     res.status(500).json({ error: err.message });

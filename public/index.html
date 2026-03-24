@@ -1369,9 +1369,7 @@
           setState({ aiBackground: data.image, quizStep: 6 });
           applyTheme();
         } else {
-          const errDetail = data.allErrors ? data.allErrors.map(e => `${e.model}: ${e.error}`).join(' | ') : (data.error || 'Unknown error');
-          console.error('BG gen errors:', data.allErrors || data);
-          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + errDetail });
+          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + (data.error || 'Unknown error') });
         }
       } catch (err) {
         setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + err.message });
@@ -1401,9 +1399,7 @@
           setState({ aiBackground: data.image, quizStep: 6 });
           applyTheme();
         } else {
-          const errDetail = data.allErrors ? data.allErrors.map(e => `${e.model}: ${e.error}`).join(' | ') : (data.error || 'Unknown error');
-          console.error('BG gen errors:', data.allErrors || data);
-          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + errDetail });
+          setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + (data.error || 'Unknown error') });
         }
       } catch (err) {
         setState({ quizStep: 0, quizOpen: false, error: 'Background generation failed: ' + err.message });
